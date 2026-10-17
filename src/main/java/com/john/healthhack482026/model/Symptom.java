@@ -21,6 +21,8 @@ public class Symptom {
         this.severity = severity;
     }
 
+    public void updateNotes(String notes) { this.notes = notes;}
+
     public String getName(){
         return this.name;
     }
