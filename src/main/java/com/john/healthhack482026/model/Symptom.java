@@ -9,14 +9,15 @@ public class Symptom {
     private String numericalValue;
     private Instant time;
     private String notes;
-    private LocalTime duration;         //HH-mm format
+    private int duration;         //HH-mm format
 
-    public Symptom(String name, int severity, String numericalValue, String notes){
+    public Symptom(String name, int severity, String numericalValue, String notes, int duration){
         this.name = name;
         this.severity = severity;
         this.numericalValue = numericalValue;
         this.time = Instant.now();
         this.notes = notes;
+        this.duration = duration;
     }
 
     public void changeSeverity(int severity){
@@ -44,4 +45,6 @@ public class Symptom {
     public String getNotes(){
         return this.notes;
     }
+
+    public int getDuration(){ return this.duration;}
 }
