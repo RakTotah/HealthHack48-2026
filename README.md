@@ -17,6 +17,6 @@
 
 ## API
 
-## Contrinbuting
+## Contributing
 
 ## License

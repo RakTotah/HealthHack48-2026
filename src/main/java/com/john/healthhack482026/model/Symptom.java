@@ -1,6 +1,7 @@
 package com.john.healthhack482026.model;
 
 import java.time.Instant;
+import java.time.LocalTime;
 
 public class Symptom {
     private String name;
@@ -8,6 +9,7 @@ public class Symptom {
     private String numericalValue;
     private Instant time;
     private String notes;
+    private LocalTime duration;         //HH-mm format
 
     public Symptom(String name, int severity, String numericalValue, String notes){
         this.name = name;
