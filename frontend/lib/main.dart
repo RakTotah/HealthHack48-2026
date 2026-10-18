@@ -20,13 +20,11 @@ class HomePage extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.center,
             child: Text("JohnKompot"),
           ),
         ),
-        body: Center(
-          child: Calendar(),
-        ),
+        body: Calendar(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, 'symptom_entry');
@@ -68,42 +66,122 @@ class _CalendarState extends State<Calendar> {
   String _selectedSymptom = ""; // Name of the selected symptom
   int _selectedRange = 0; // Number of days for range selection
 
-  List<Symptom> _getEvents() {
-    // Backend logic to fetch events for the selected day can be called here
+  List<Symptom> _getSymptoms() {
+    // Backend logic to fetch symptoms for the selected day can be called here
     switch (_selectedMode) {
       case 0:
-        // Fetch events for the selected day
-        // return eventsForRange(_selectedDay, 0);
+        // Fetch symptoms for the selected day
+        // return symptomsForRange(_selectedDay, 0);
       case 1:
-        // Fetch events for the selected range
-        // return eventsForRange(_selectedDay, _selectedRange);
+        // Fetch symptoms for the selected range
+        // return symptomsForRange(_selectedDay, _selectedRange);
       case 2:
-        // Fetch events for the selected symptom
-        // return eventsForSymptom(_selectedSymptom);
+        // Fetch symptoms for the selected symptom
+        // return symptomsForSymptom(_selectedSymptom);
     }
+    return [];
+  }
+
+  List<Symptom> _getSymptomsCalendar() {
+    // Backend logic to fetch symptoms for the calendar can be called here
+    //return sympotomsForCalendar();
     return [];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: TableCalendar(
-        firstDay: DateTime.utc(2020, 1, 1),
-        lastDay: DateTime.now(),
-        focusedDay: _focusedDay,
-        selectedDayPredicate: (day) {
-          return isSameDay(_selectedDay, day);
-        },
-        onDaySelected: (selectedDay, focusedDay) {
-          setState(() {
-            _selectedDay = selectedDay;
-            _focusedDay = selectedDay;
-          });
-        },
-        eventLoader: (day) {
-        return _getEvents();
-        },
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text("Calendar", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        TableCalendar(
+          firstDay: DateTime.utc(2020, 1, 1),
+          lastDay: DateTime.now(),
+          focusedDay: _focusedDay,
+          selectedDayPredicate: (day) {
+            return isSameDay(_selectedDay, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(() {
+              _selectedDay = selectedDay;
+              _focusedDay = selectedDay;
+            });
+          },
+          eventLoader: (day) {
+          return _getSymptomsCalendar();
+          },
+        ),
+        SizedBox(height: 20),
+        //ModeSelector(),
+        SizedBox(height: 20),
+        //SymptomList(),
+      ],
+    );
+  }
+}
+
+class ModeSelector extends StatelessWidget {
+  const ModeSelector({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // Set mode to day
+          },
+          child: Text("Day"),
+        ),
+        SizedBox(width: 10),
+        ElevatedButton(
+          onPressed: () {
+            // Set mode to range
+          },
+          child: Text("Range"),
+        ),
+        SizedBox(width: 10),
+        ElevatedButton(
+          onPressed: () {
+            // Set mode to symptom
+          },
+          child: Text("Symptom"),
+        ),
+      ],
+    );
+  }
+}
+
+class SymptomList extends StatelessWidget {
+  const SymptomList(this.symptoms, {super.key}); 
+
+  final List<Symptom> symptoms;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: symptoms.length,
+      itemBuilder: (context, index) {
+        return SymptomDisplay(symptom: symptoms[index]);
+      },
+    );
+  }
+}
+
+
+class SymptomDisplay extends StatelessWidget {
+  const SymptomDisplay({super.key, required this.symptom});
+
+  final Symptom symptom;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(symptom.name),
+      subtitle: Text("${symptom.note} - Severity: ${symptom.severity}"),
+      trailing: Text("${symptom.date.toLocal()}"),
     );
   }
 }
