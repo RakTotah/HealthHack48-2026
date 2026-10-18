@@ -7,6 +7,8 @@ void main() {
     routes: {
       '/': (context) => const HomePage(),
       'symptom_entry': (context) => const SymptomEntryPage(),
+      'login': (context) => const LoginPage(),
+      'register': (context) => const RegisterPage(),
     },
   ));
 }
@@ -47,6 +49,38 @@ class SymptomEntryPage extends StatelessWidget {
       ),
       body: Center(
         child: Text("Symptom Entry Form Goes Here"),
+      ),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Login"),
+      ),
+      body: Center(
+        child: Text("Login Form Goes Here"),
+      ),
+    );
+  }
+}
+
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Register"),
+      ),
+      body: Center(
+        child: Text("Registration Form Goes Here"),
       ),
     );
   }
@@ -169,7 +203,6 @@ class SymptomList extends StatelessWidget {
     );
   }
 }
-
 
 class SymptomDisplay extends StatelessWidget {
   const SymptomDisplay({super.key, required this.symptom});
