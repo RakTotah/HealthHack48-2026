@@ -7,7 +7,7 @@ public record Summary(
         LocalDate from,
         LocalDate to,
         int totalEntries,
-        double averageSeverity,
+        double averageSeverity, //per symptom (a list)
         Map<String, Integer> countBySymptom,    // symptom name -> times logged
         int totalMinutes
 ) {

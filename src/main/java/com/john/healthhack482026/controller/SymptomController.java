@@ -1,92 +1,29 @@
 package com.john.healthhack482026.controller;
 
 import com.john.healthhack482026.model.Symptom;
-import com.john.healthhack482026.model.Summary;
 import com.john.healthhack482026.repository.SymptomLogRepository;
-import tools.jackson.databind.ObjectMapper;
+import com.john.healthhack482026.service.SymptomService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.UUID;
 
+@RestController
 public class SymptomController {
 
-    // G: what were you thinking for the controllers
-    // prompting methods from repo
+   SymptomService service;
 
-    private final SymptomLogRepository repo;
-    private final ObjectMapper objectMapper;
-    private final ZoneId zone = ZoneId.systemDefault();
-
-    public SymptomController(SymptomLogRepository repo, ObjectMapper objectMapper) {
-        this.repo = repo;
-        this.objectMapper = objectMapper;
+    public SymptomController(SymptomService service){
+        this.service = service;
     }
 
-    // log symptoms to repo
-    public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
-        validate(name, severity, hourDuration, minuteDuration);
-        return repo.save(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration));
+    @GetMapping("/symptoms/{id}")
+    public ResponseEntity<Symptom> getByID(@PathVariable String id){
+        return service.getHistory(UUID.fromString(id));
     }
 
-    // edit entry
-    public Symptom editEntry(UUID id, int severity, String notes){
-        Optional<Symptom> maybe = repo.findByID(id);
-        if (maybe.isEmpty()){throw new NoSuchElementException("No Symptom with id" + id);}
-        Symptom s = maybe.get();
-        validate(s.getName(), severity, 0, 0);
-        s.changeSeverity(severity);
-        s.updateNotes(notes);
-        repo.save(s);
-        return s;
-    }
-
-    // remove entry
-    public boolean removeEntry(UUID id){
-        return repo.delete(id);
-    }
-
-    // get history
-    public List<Symptom> getHistory() {
-        throw new UnsupportedOperationException();
-    }
-
-    // get daily, weekly, monthly summary (uses buildSummary,will do it later)
-    private Summary getDailySummary(LocalDate day){
-        throw new UnsupportedOperationException();
-    }
-    private Summary getWeeklySummary(LocalDate weekStart) {
-        throw new UnsupportedOperationException();
-    }
-    private Summary getMonthlySummary(LocalDate monthStart){
-        throw new UnsupportedOperationException();
-    }
-
-    // export to json
-    public String exportToJson(){
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(repo.getAll());
-    }
-
-    // helpers
-    private void validate(String name, int severity, int hourDuration, int minuteDuration){
-        if (name == null || name.isBlank()){throw new IllegalArgumentException("Name is required");}
-        if (severity < 1 || severity > 10){throw new IllegalArgumentException("Severity must be 1 to 10");}
-        if (hourDuration < 0 || minuteDuration < 0 || minuteDuration > 59){throw new IllegalArgumentException("Invalid Duration");}
-    }
-
-    private Summary buildSummary(LocalDate from, LocalDate to){
-        Instant start = from.atStartOfDay(zone).toInstant();
-        Instant endExclusive = to.plusDays(1).atStartOfDay(zone).toInstant();
-        List<Symptom> entries = repo.findByDateRange(start, endExclusive);
-
-        double averageSeverity = entries.stream().mapToInt(Symptom::getSeverity).average().orElse(0);
-
-        Map<String, Integer> counts = new HashMap<>();
-        for (Symptom s : entries){
-            counts.merge(s.getName().toLowerCase(),1, Integer::sum);
-        }
-        int totalTime = entries.stream().mapToInt(s -> s.getHourDuration() * 60 + s.getMinuteDuration()).sum();
-        return new Summary(from, to, entries.size(), averageSeverity, counts, totalTime);
-    }
+    @GetMapping("/symptoms")
+    public ResponseEntity
 }
