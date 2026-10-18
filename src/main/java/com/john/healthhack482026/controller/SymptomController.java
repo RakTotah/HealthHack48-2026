@@ -2,6 +2,7 @@ package com.john.healthhack482026.controller;
 
 import com.john.healthhack482026.model.Symptom;
 import com.john.healthhack482026.model.Summary;
+import com.john.healthhack482026.model.User;
 import com.john.healthhack482026.repository.SymptomLogRepository;
 import tools.jackson.databind.ObjectMapper;
 
@@ -18,16 +19,18 @@ public class SymptomController {
     private final SymptomLogRepository repo;
     private final ObjectMapper objectMapper;
     private final ZoneId zone = ZoneId.systemDefault();
+    private User user;
 
-    public SymptomController(SymptomLogRepository repo, ObjectMapper objectMapper) {
+    public SymptomController(SymptomLogRepository repo, ObjectMapper objectMapper, User user) {
         this.repo = repo;
         this.objectMapper = objectMapper;
+        this.user = user;
     }
 
     // log symptoms to repo
     public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
         validate(name, severity, hourDuration, minuteDuration);
-        return repo.save(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration));
+        return repo.save(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration, user.getUserId()));
     }
 
     // edit entry
