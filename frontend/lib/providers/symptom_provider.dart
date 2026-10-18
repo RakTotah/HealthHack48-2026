@@ -8,14 +8,16 @@ class SymptomProvider with ChangeNotifier {
 
   List<Symptom> get symptoms => _symptoms;
 
-  Future<void> fetchSymptoms() async {
+  Future<void> fetchSymptomsByDate(DateTime day, int range) async {
     try {
-      _symptoms = await _symptomService.fetchSymptomsByDate(DateTime.now(), 1);
+      _symptoms = await _symptomService.fetchSymptomsByDate(day, range);
       notifyListeners();
     } catch (e) {
       print('Error fetching symptoms: $e');
     }
   }
+
+  
 
   Future<void> addSymptom(Symptom symptom) async {
     try {

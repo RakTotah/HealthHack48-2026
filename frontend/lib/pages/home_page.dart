@@ -42,20 +42,15 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
-  bool _symptomMode = false; // false for date range, true for symptom
-  String _selectedSymptom = ""; // Name of the selected symptom
-  int _selectedRange = 1; // Number of days for range selection
-
-  _setMode(bool mode) {
-    setState(() {
-      _symptomMode = mode;
-    });
-  }
+  String _selectedSymptom = "";
+  
 
   _setSymptom(String symptom) {
     setState(() {
       _selectedSymptom = symptom;
     });
+
+    
   }
 
   _setRange(String range) {
