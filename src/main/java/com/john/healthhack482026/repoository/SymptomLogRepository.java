@@ -14,9 +14,9 @@ public class SymptomLogRepository {
     private List<Symptom> allSymptoms;
     private Path storagePath;
 
-    public SymptomLogRepository(ObjectMapper objectMapper, StorageVariable storageVariable){
-        this.objectMapper = objectMapper;
-        this.storagePath = Path.of(storageVariable.file());
+    public SymptomLogRepository(StorageVariable storageVariable){
+        this.objectMapper = new ObjectMapper();
+        this.storagePath = Path.of(storageVariable.file);
     }
 
     public void loadSymptoms(){
