@@ -103,4 +103,8 @@ public class SymptomService {
 
         return new Summary(from, to, entries.size(), averageSeverityBySymptom, counts, totalTime);
     }
+
+    public List<Symptom> getHistory() {
+        return repo.getAll();
+    }
 }
