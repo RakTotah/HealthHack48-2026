@@ -50,7 +50,27 @@ class SymptomEntryPage extends StatelessWidget {
         title: Text("Symptom Entry"),
       ),
       body: Center(
-        child: Text("Symptom Entry Form Goes Here"),
+        child: SymptomEntryForm()
+      ),
+    );
+  }
+}
+
+class SymptomEntryForm extends StatefulWidget {
+  const SymptomEntryForm({super.key});
+
+  @override
+  State<SymptomEntryForm> createState() => _SymptomEntryFormState();
+}
+
+class _SymptomEntryFormState extends State<SymptomEntryForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: Column(
+        children: [
+          // Form fields go here
+        ],
       ),
     );
   }
@@ -298,7 +318,7 @@ class ModeSelector extends StatelessWidget {
             ],
             onSelected: (String? value) {
               if (value != null) {
-                onSymptomChanged(value);  
+                onSymptomChanged(value);
               }
             },
           ),
