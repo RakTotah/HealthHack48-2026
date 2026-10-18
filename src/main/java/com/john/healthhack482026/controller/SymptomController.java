@@ -3,30 +3,47 @@ package com.john.healthhack482026.controller;
 import com.john.healthhack482026.model.Symptom;
 import com.john.healthhack482026.model.Summary;
 import com.john.healthhack482026.repository.SymptomLogRepository;
+import tools.jackson.databind.ObjectMapper;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
+import java.time.ZoneId;
+import java.util.*;
 
 public class SymptomController {
 
     // G: what were you thinking for the controllers
     // prompting methods from repo
 
+    private final SymptomLogRepository repo;
+    private final ObjectMapper objectMapper;
+    private final ZoneId zone = ZoneId.systemDefault();
+
+    public SymptomController(SymptomLogRepository repo, ObjectMapper objectMapper) {
+        this.repo = repo;
+        this.objectMapper = objectMapper;
+    }
 
     // log symptoms to repo
     public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
-        throw new UnsupportedOperationException();
+        validate(name, severity, hourDuration, minuteDuration);
+        return repo.add(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration));
     }
 
     // edit entry
     public Symptom editEntry(UUID id, int severity, String notes){
-        throw new UnsupportedOperationException();
+        Symptom s = repo.findByID(id);
+        if (s == null){throw new NoSuchElementException("No Symptom with id" + id))}
+        validate(s.getName(), severity, 0, 0);
+        s.changeSeverity(severity);
+        s.updateNotes(notes);
+        repo.save();
+        return s;
     }
 
     // remove entry
     public boolean removeEntry(UUID id){
-        throw new UnsupportedOperationException();
+        return repo.delete(id);
     }
 
     // get history
@@ -34,7 +51,7 @@ public class SymptomController {
         throw new UnsupportedOperationException();
     }
 
-    // get daily, weekly, monthly summary
+    // get daily, weekly, monthly summary (uses buildSummary,will do it later)
     private Summary getDailySummary(LocalDate day){
         throw new UnsupportedOperationException();
     }
@@ -47,7 +64,28 @@ public class SymptomController {
 
     // export to json
     public String exportToJson(){
-        throw new UnsupportedOperationException();
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(repo.getAll());
     }
 
+    // helpers
+    private void validate(String name, int severity, int hourDuration, int minuteDuration){
+        if (name == null || name.isBlank()){throw new IllegalArgumentException("Name is required");}
+        if (severity < 1 || severity > 10){throw new IllegalArgumentException("Severity must be 1 to 10");}
+        if (hourDuration < 0 || minuteDuration < 0 || minuteDuration > 59){throw new IllegalArgumentException("Invalid Duration");}
+    }
+
+    private Summary buildSummary(LocalDate from, LocalDate to){
+        Instant start = from.atStartOfDay(zone).toInstant();
+        Instant endExclusive = to.plusDays(1).atStartOfDay(zone).toInstant();
+        List<Symptom> entries = repo.findByDateRange(start, endExclusive);
+
+        double averageSeverity = entries.stream().mapToInt(Symptom::getSeverity).average().orElse(0);
+
+        Map<String, Integer> counts = new HashMap<>();
+        for (Symptom s : entries){
+            counts.merge(s.getName().toLowerCase(),1, Integer::sum);
+        }
+        int totalTime = entries.stream().mapToInt(s -> s.getHourDuration() * 60 + s.getMinuteDuration()).sum();
+        return new Summary(from, to, entries.size(), averageSeverity, counts, totalTime);
+    }
 }

@@ -5,8 +5,10 @@ import com.john.healthhack482026.model.Symptom;
 import org.springframework.stereotype.Repository;
 import tools.jackson.databind.ObjectMapper;
 
+import java.lang.ScopedValue;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class SymptomLogRepository {
