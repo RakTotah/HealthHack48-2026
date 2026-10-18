@@ -33,7 +33,7 @@ public class SymptomService {
 
     // find by symptomId
     public Symptom findById(UUID symptomId, User user){
-        Optional<Symptom> temp = repo.getAll().stream().filter(x -> x.getId() == symptomId).findFirst();
+        Optional<Symptom> temp = repo.getAll().stream().filter(x -> x.getSymptomId() == symptomId).findFirst();
         if (temp.isEmpty()){throw new NoSuchElementException("No Symptom with symptomId" + symptomId + " that belongs you to.");}
         return temp.get();
     }
@@ -56,7 +56,7 @@ public class SymptomService {
     // log symptoms to repo
     public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration, User user) {
         validate(name, severity, hourDuration, minuteDuration, user);
-        return repo.save(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration, user.getUserId()));
+        return repo.save(new Symptom(name.trim(), severity, notes, hourDuration, minuteDuration, user.getUserId()));
     }
 
     // edit entry

@@ -7,12 +7,9 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
 public class SymptomLogRepository {
@@ -62,11 +59,11 @@ public class SymptomLogRepository {
     }
 
     private boolean isPresent(UUID orderID){
-        return !getAll().stream().filter(x -> x.getId() == orderID).toList().isEmpty();
+        return !getAll().stream().filter(x -> x.getSymptomId() == orderID).toList().isEmpty();
     }
 
     public boolean delete(UUID id) {
-        Optional<Symptom> toRemove = getAll().stream().filter(x -> x.getId()==id).findFirst();
+        Optional<Symptom> toRemove = getAll().stream().filter(x -> x.getSymptomId()==id).findFirst();
         if (toRemove.isEmpty()){
             return false;
         }
@@ -77,7 +74,7 @@ public class SymptomLogRepository {
     }
 
     public Symptom save(Symptom symptom) {
-        if (isPresent(symptom.getId())){
+        if (isPresent(symptom.getSymptomId())){
             throw new IllegalArgumentException();
         }
         this.allSymptoms.add(symptom);
@@ -90,7 +87,7 @@ public class SymptomLogRepository {
 
     public Symptom update(Symptom symptom) {
         for (int i = 0; i < allSymptoms.size(); i++) {
-            if (allSymptoms.get(i).getId().equals(symptom.getId())) {
+            if (allSymptoms.get(i).getSymptomId().equals(symptom.getSymptomId())) {
                 allSymptoms.set(i, symptom);
                 persistToDisk();
                 return symptom;
