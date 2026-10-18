@@ -36,7 +36,7 @@ public class SymptomController {
     // edit entry
     public Symptom editEntry(UUID id, int severity, String notes){
         Optional<Symptom> maybe = repo.findByID(id);
-        if (maybe.isEmpty()){throw new NoSuchElementException("No Symptom with id" + id);}
+        if (maybe.isEmpty()){throw new NoSuchElementException("No Symptom with id" + id + " that belongs you to.");}
         Symptom s = maybe.get();
         validate(s.getName(), severity, 0, 0);
         s.changeSeverity(severity);
