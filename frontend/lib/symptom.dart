@@ -1,4 +1,5 @@
 class Symptom {
+  final int id;
   final String name;
   final String note;
   final int severity;
@@ -7,6 +8,7 @@ class Symptom {
   final int minutes;
 
   Symptom({
+    required this.id,
     required this.name,
     required this.note,
     required this.severity,
@@ -17,6 +19,7 @@ class Symptom {
 
   factory Symptom.fromJson(Map<String, dynamic> json) {
     return Symptom(
+      id: json['id'],
       name: json['name'],
       note: json['note'],
       severity: json['severity'],
@@ -28,6 +31,7 @@ class Symptom {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'note': note,
       'severity': severity,
