@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp (MaterialApp(
@@ -106,6 +107,23 @@ class _CalendarState extends State<Calendar> {
       case 0:
         // Fetch symptoms for the selected day
         // return symptomsForRange(_selectedDay, 0);
+        Symptom exampleSymptom = (
+          name: "Headache",
+          note: "Mild headache in the morning",
+          severity: 3,
+          date: _selectedDay,
+          hours: 1,
+          minutes: 30
+        );
+        Symptom exampleSymptom2 = (
+          name: "Fatigue",
+          note: "Feeling tired after work",
+          severity: 5,
+          date: DateTime.now(),
+          hours: 2,
+          minutes: 0
+        );
+        return [exampleSymptom, exampleSymptom2];
       case 1:
         // Fetch symptoms for the selected range
         // return symptomsForRange(_selectedDay, _selectedRange);
@@ -127,7 +145,6 @@ class _CalendarState extends State<Calendar> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text("Calendar", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         TableCalendar(
           firstDay: DateTime.utc(2020, 1, 1),
           lastDay: DateTime.now(),
@@ -148,7 +165,7 @@ class _CalendarState extends State<Calendar> {
         SizedBox(height: 20),
         //ModeSelector(),
         SizedBox(height: 20),
-        //SymptomList(),
+        SymptomList(_getSymptoms()),
       ],
     );
   }
@@ -208,13 +225,15 @@ class SymptomDisplay extends StatelessWidget {
   const SymptomDisplay({super.key, required this.symptom});
 
   final Symptom symptom;
+  static final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(symptom.name),
-      subtitle: Text("${symptom.note} - Severity: ${symptom.severity}"),
-      trailing: Text("${symptom.date.toLocal()}"),
+      subtitle: Text("Notes:\n${symptom.note}"),
+      trailing: Text("${formatter.format(symptom.date)}\n${symptom.hours}h ${symptom.minutes}m"),
+      leading: Text("${symptom.severity}/10"),
     );
   }
 }
