@@ -16,4 +16,8 @@ public class User {
     public UUID getUserId(){
         return this.userId;
     }
+
+    public String getPassword() { return password; }
+
+    public String getUsername(){ return this.username; }
 }
