@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../symptom.dart';
+import '../models/symptom.dart';
 
 class SymptomService {
   final String apiUrl = 'http://localhost:8080/symptoms';
