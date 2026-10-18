@@ -100,7 +100,7 @@ class _CalendarState extends State<Calendar> {
   DateTime _focusedDay = DateTime.now();
   bool _symptomMode = false; // false for date range, true for symptom
   String _selectedSymptom = ""; // Name of the selected symptom
-  int _selectedRange = 0; // Number of days for range selection
+  int _selectedRange = 1; // Number of days for range selection
 
   _setMode(bool mode) {
     setState(() {
@@ -108,9 +108,24 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
-  _setRange(int range) {
+  _setRange(String range) {
+    int days = 0;
+    switch (range) {
+      case "day":
+        days = 1;
+        break;
+      case "week":
+        days = 7;
+        break;
+      case "month":
+        days = DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month);
+        break;
+      case "custom":
+        // Custom range logic can be implemented here
+        break;
+    }
     setState(() {
-      _selectedRange = range;
+      _selectedRange = days;
     });
   }
 
@@ -173,7 +188,7 @@ class _CalendarState extends State<Calendar> {
           },
         ),
         SizedBox(height: 20),
-        ModeSelector(_setMode, _setRange),
+        ModeSelector(_symptomMode, _setMode, _setRange),
         SizedBox(height: 20),
         SymptomList(_getSymptoms()),
       ],
@@ -182,10 +197,11 @@ class _CalendarState extends State<Calendar> {
 }
 
 class ModeSelector extends StatelessWidget {
-  const ModeSelector(this.onModeChanged, this.onRangeChanged, {super.key});
+  const ModeSelector(this.mode, this.onModeChanged, this.onRangeChanged, {super.key});
 
+  final bool mode;
   final Function(bool) onModeChanged;
-  final Function(int) onRangeChanged;
+  final Function(String) onRangeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -199,19 +215,63 @@ class ModeSelector extends StatelessWidget {
               onPressed: () {
                 onModeChanged(false);
               },
-              child: Text("Day"),
+              child: Text("By Date"),
             ),
             SizedBox(width: 10),
             ElevatedButton(
               onPressed: () {
-                // Set mode to range
+                // Set mode to symptom mode
                 onModeChanged(true);
               },
-              child: Text("Range"),
+              child: Text("By Symptom"),
             ),
           ],
         ),
-        Text("Select a mode to view symptoms")
+        if (mode == false) ...[
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  onRangeChanged("day");
+                },
+                child: Text("Day"),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  onRangeChanged("week");
+                },
+                child: Text("Week"),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  onRangeChanged("month");
+                },
+                child: Text("Month"),
+              ),
+              SizedBox(width: 10),
+              Container(
+                width: 100,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: "Custom",
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (value) {
+                    int? customDays = int.tryParse(value);
+                    if (customDays != null && customDays > 0) {
+                      onRangeChanged("custom");
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ]
       ],
     );
   }
