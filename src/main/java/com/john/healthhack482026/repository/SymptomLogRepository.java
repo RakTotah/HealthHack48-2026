@@ -77,7 +77,9 @@ public class SymptomLogRepository implements RepositoryInterface {
 
     @Override
     public List<Symptom> findByDateRange(Instant start, Instant end) {
-        return List.of();
+        return this.getAll().stream().filter(x -> (
+                x.getTime().isAfter(start) && x.getTime().isBefore(end)
+                )).toList();
     }
 
     private boolean isPresent(UUID orderID){
