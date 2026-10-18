@@ -1,5 +1,9 @@
 package com.john.healthhack482026.repository;
 
+import com.john.healthhack482026.Exceptions.DuplicateIDException;
+import com.john.healthhack482026.Exceptions.InvalidLoginDetailsException;
+import com.john.healthhack482026.Exceptions.StorageException;
+import com.john.healthhack482026.Exceptions.UnregisteredUserException;
 import com.john.healthhack482026.model.User;
 import org.springframework.stereotype.Repository;
 import tools.jackson.core.type.TypeReference;
@@ -23,7 +27,7 @@ public class LoginInfoRepository {
         this.objectMapper = new ObjectMapper();
         this.storagePath = Path.of("./data/logins.json");
         try{load();} catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StorageException(e.getMessage());
         }
     }
 
@@ -60,7 +64,7 @@ public class LoginInfoRepository {
 
     public boolean checkLogin(String username, String password){
         if (!isRegistered(username)){
-            throw new IllegalArgumentException("You are not registered");
+            throw new UnregisteredUserException("You are not registered");
         }
         User test = getUser(username);
         return Objects.equals(test.getPassword(), password);
@@ -72,14 +76,14 @@ public class LoginInfoRepository {
                         && Objects.equals(x.getPassword(), password))
                 .findFirst();
         if (found.isEmpty()){
-            throw new IllegalArgumentException("Incorrect username or password.");
+            throw new InvalidLoginDetailsException("Incorrect username or password.");
         }
         return found.get().getUserId();
     }
 
     public boolean registerUser(User user){
         if (isRegistered(user.getUsername())){
-            throw new IllegalArgumentException("This username is taken.");
+            throw new DuplicateIDException("This username is taken.");
         }
         storedLogins.add(user);
         persistToDisk();
@@ -88,7 +92,7 @@ public class LoginInfoRepository {
 
     public boolean deleteUser(User user){
         if (!isRegistered(user.getUsername())){
-            throw new IllegalArgumentException("No user with this username is registered");
+            throw new UnregisteredUserException("No user with this username is registered");
         }
         storedLogins.remove(user);
         persistToDisk();

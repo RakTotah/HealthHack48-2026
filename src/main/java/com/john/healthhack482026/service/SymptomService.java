@@ -1,5 +1,6 @@
 package com.john.healthhack482026.service;
 
+import com.john.healthhack482026.Exceptions.SymptomNotFoundException;
 import com.john.healthhack482026.model.Symptom;
 import com.john.healthhack482026.model.Summary;
 import com.john.healthhack482026.model.User;
@@ -32,7 +33,7 @@ public class SymptomService {
     // find by symptomId
     public Symptom findById(UUID symptomId, User user){
         Optional<Symptom> temp = repo.getAll().stream().filter(x -> x.getSymptomId() == symptomId).findFirst();
-        if (temp.isEmpty()){throw new NoSuchElementException("No Symptom with symptomId" + symptomId + " that belongs you to.");}
+        if (temp.isEmpty()){throw new SymptomNotFoundException("No Symptom with symptomId" + symptomId + " that belongs you to.");}
         return temp.get();
     }
 

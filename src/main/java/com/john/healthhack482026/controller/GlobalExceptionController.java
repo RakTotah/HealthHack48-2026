@@ -1,8 +1,6 @@
 package com.john.healthhack482026.controller;
 
-import com.john.healthhack482026.Exceptions.InvalidLoginDetailsException;
-import com.john.healthhack482026.Exceptions.StorageException;
-import com.john.healthhack482026.Exceptions.SymptomNotFoundException;
+import com.john.healthhack482026.Exceptions.*;
 import com.john.healthhack482026.dto.ErrorResponse;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionController {
 
     @ExceptionHandler(InvalidLoginDetailsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidLogin(Exception ex){
@@ -28,6 +26,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleStorageException(Exception ex){
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("UNEXPECTED_STORAGE_ERROR", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UnregisteredUserException.class)
+    public ResponseEntity<ErrorResponse> handleUnregisteredUser(Exception ex){
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("USER_NOT_REGISTERED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateIDException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateID(Exception ex){
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("DUPLICATE_ID_FOUND", ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
