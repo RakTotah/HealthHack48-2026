@@ -2,6 +2,7 @@ package com.john.healthhack482026.model;
 
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.UUID;
 
 public class Symptom {
     private String name;
@@ -11,6 +12,7 @@ public class Symptom {
     private String notes;
     private int hourDuration;
     private int minuteDuration;
+    private UUID id;
 
 
     public Symptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
@@ -21,7 +23,7 @@ public class Symptom {
         this.notes = notes;
         this.hourDuration = hourDuration;
         this.minuteDuration = minuteDuration;
-
+        this.id = UUID.randomUUID();
     }
 
     public void changeSeverity(int severity){
@@ -53,4 +55,6 @@ public class Symptom {
     public int getHourDuration(){return this.hourDuration;}
 
     public int getMinuteDuration(){return this.minuteDuration;}
+
+    public UUID getId(){ return this.id;}
 }
