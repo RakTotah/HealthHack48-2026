@@ -107,4 +107,18 @@ public class SymptomLogRepository implements RepositoryInterface {
         return symptom;
     }
 
+
+    // since we have find by id we can use this method to update the current instance as
+    /*
+    public Symptom update(Symptom symptom) {
+        for (int i = 0; i < allSymptoms.size(); i++) {
+            if (allSymptoms.get(i).getId().equals(symptom.getId())) {
+                allSymptoms.set(i, symptom);
+                persistToDisk();
+                return symptom;
+            }
+        }
+        return symptom;
+    }
+    */
 }

@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SymptomService {
@@ -29,7 +30,7 @@ public class SymptomService {
         this.user = user;
     }
 
-    // find by Id
+    // find by id
     public Symptom findById(UUID id){
         Optional<Symptom> temp = repo.findByID(id);
         if (temp.isEmpty()){throw new NoSuchElementException("No Symptom with id" + id + " that belongs you to.");}
@@ -37,21 +38,19 @@ public class SymptomService {
     }
 
     // log symptoms to repo
-    public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
+    public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration) {
         validate(name, severity, hourDuration, minuteDuration);
         return repo.save(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration, user.getUserId()));
     }
 
     // edit entry
     public Symptom editEntry(UUID id, int severity, String notes){
-        Optional<Symptom> maybe = repo.findByID(id);
-        if (maybe.isEmpty()){throw new NoSuchElementException("No Symptom with id" + id + " that belongs you to.");}
-        Symptom s = maybe.get();
-        validate(s.getName(), severity, 0, 0);
+        Symptom s = findById(id);
+        validate(s.getName(),severity,0,0);
         s.changeSeverity(severity);
         s.updateNotes(notes);
-        repo.save(s);
-        return s;
+        repo.delete(id);        //inital idea was to make an update method in the log class but that is too inefficient, this works well
+        return repo.save(s);
     }
 
     // remove entry
@@ -59,20 +58,15 @@ public class SymptomService {
         return repo.delete(id);
     }
 
-    // get history
-    public List<Symptom> getHistory() {
-        throw new UnsupportedOperationException();
-    }
-
     // get daily, weekly, monthly summary (uses buildSummary,will do it later)
     private Summary getDailySummary(LocalDate day){
-        throw new UnsupportedOperationException();
+        return buildSummary(day,day);
     }
     private Summary getWeeklySummary(LocalDate weekStart) {
-        throw new UnsupportedOperationException();
+        return buildSummary(weekStart, weekStart.plusDays(6));
     }
     private Summary getMonthlySummary(LocalDate monthStart){
-        throw new UnsupportedOperationException();
+        return buildSummary(monthStart, monthStart.withDayOfMonth(monthStart.lengthOfMonth()));
     }
 
     // export to json
@@ -87,18 +81,26 @@ public class SymptomService {
         if (hourDuration < 0 || minuteDuration < 0 || minuteDuration > 59){throw new IllegalArgumentException("Invalid Duration");}
     }
 
-    private Summary buildSummary(LocalDate from, LocalDate to){
+    private Summary buildSummary(LocalDate from, LocalDate to) {
         Instant start = from.atStartOfDay(zone).toInstant();
         Instant endExclusive = to.plusDays(1).atStartOfDay(zone).toInstant();
         List<Symptom> entries = repo.findByDateRange(start, endExclusive);
 
-        double averageSeverity = entries.stream().mapToInt(Symptom::getSeverity).average().orElse(0);
+        // "Headache" and "headache" count as the same symptom
+        Map<String, Double> averageSeverityBySymptom = entries.stream()
+                .collect(Collectors.groupingBy(
+                        s -> s.getName().toLowerCase(),
+                        Collectors.averagingInt(Symptom::getSeverity)));
 
         Map<String, Integer> counts = new HashMap<>();
-        for (Symptom s : entries){
-            counts.merge(s.getName().toLowerCase(),1, Integer::sum);
+        for (Symptom s : entries) {
+            counts.merge(s.getName().toLowerCase(), 1, Integer::sum);
         }
-        int totalTime = entries.stream().mapToInt(s -> s.getHourDuration() * 60 + s.getMinuteDuration()).sum();
-        return new Summary(from, to, entries.size(), averageSeverity, counts, totalTime);
+
+        int totalTime = entries.stream()
+                .mapToInt(s -> s.getHourDuration() * 60 + s.getMinuteDuration())
+                .sum();
+
+        return new Summary(from, to, entries.size(), averageSeverityBySymptom, counts, totalTime);
     }
 }
