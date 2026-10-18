@@ -72,31 +72,10 @@ class _CalendarState extends State<Calendar> {
     setState(() {
       _selectedRange = days;
     });
-  }
 
   List<String> _getUserSymptoms() {
     // Backend logic to fetch user symptoms can be called here
     return ["Headache", "Fatigue", "Nausea"]; // Example symptom options
-  }
-
-  List<Symptom> _getSymptoms() {
-    // Backend logic to fetch symptoms for the selected day can be called here
-    switch (_symptomMode) {
-      case false:
-        // Fetch symptoms for the selected range
-        // return symptomsForRange(_selectedDay, _selectedRange);
-        return [];
-      case true:
-        // Fetch symptoms for the selected symptom
-        // return symptomsForSymptom(_selectedSymptom);
-    }
-    return [];
-  }
-
-  List<Symptom> _getSymptomsCalendar() {
-    // Backend logic to fetch symptoms for the calendar can be called here
-    //return sympotomsForCalendar();
-    return [];
   }
 
   late final List<String> _symptomOptions = _getUserSymptoms(); // Example symptom options
@@ -124,23 +103,19 @@ class _CalendarState extends State<Calendar> {
           },
         ),
         SizedBox(height: 20),
-        ModeSelector(_symptomMode, _selectedSymptom, _symptomOptions, _setMode, _setRange, _setSymptom),
+        ModeSelector(_symptomMode, _setRange),
         SizedBox(height: 20),
-        SymptomList(_getSymptoms()),
+        SymptomList(),
       ],
     );
   }
 }
 
 class ModeSelector extends StatelessWidget {
-  const ModeSelector(this.mode, this.symptom, this.symptomOptions, this.onModeChanged, this.onRangeChanged, this.onSymptomChanged, {super.key});
+  ModeSelector(this.mode, this.onRangeChanged, {super.key});
 
-  final bool mode;
-  final String symptom;
-  final List<String> symptomOptions;
-  final Function(bool) onModeChanged;
-  final Function(String) onRangeChanged;
-  final Function(String) onSymptomChanged;
+  bool mode;
+  final Function onRangeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +127,7 @@ class ModeSelector extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                onModeChanged(false);
+                ;
               },
               child: Text("By Date"),
             ),
@@ -160,7 +135,7 @@ class ModeSelector extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Set mode to symptom mode
-                onModeChanged(true);
+                ;
               },
               child: Text("By Symptom"),
             ),
