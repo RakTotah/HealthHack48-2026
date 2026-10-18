@@ -12,6 +12,7 @@ public class Symptom {
     private int hourDuration;
     private int minuteDuration;
 
+
     public Symptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
         this.name = name;
         this.severity = severity;
@@ -20,6 +21,7 @@ public class Symptom {
         this.notes = notes;
         this.hourDuration = hourDuration;
         this.minuteDuration = minuteDuration;
+
     }
 
     public void changeSeverity(int severity){
