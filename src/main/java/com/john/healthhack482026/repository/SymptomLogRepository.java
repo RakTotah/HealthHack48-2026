@@ -1,6 +1,5 @@
 package com.john.healthhack482026.repository;
 
-import com.john.healthhack482026.config.StorageVariable;
 import com.john.healthhack482026.model.Symptom;
 import org.springframework.stereotype.Repository;
 import tools.jackson.databind.ObjectMapper;
@@ -17,13 +16,14 @@ public class SymptomLogRepository implements RepositoryInterface {
     private List<Symptom> allSymptoms;
     private Path storagePath;
 
-    public SymptomLogRepository(){
+    public SymptomLogRepository(UUID userID){
         this.objectMapper = new ObjectMapper();
         this.storagePath = Path.of("./data/symptoms.json");
+        this.load(userID);
     }
 
-    public void loadSymptoms(){
-
+    private void load(UUID userID){
+        this.allSymptoms = List.of();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SymptomLogRepository implements RepositoryInterface {
     }
 
     @Override
-    public List<Symptom> getAll(UUID userID) {
+    public List<Symptom> getAll() {
         return List.of();
     }
 
