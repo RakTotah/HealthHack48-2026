@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp (MaterialApp(
+    initialRoute: '/',
+    routes: {
+      '/': (context) => const HomePage(),
+      'symptom_entry': (context) => const SymptomEntryPage(),
+    },
+  ));
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,25 +21,47 @@ class MainApp extends StatelessWidget {
         appBar: AppBar(
           title: Align(
             alignment: Alignment.centerLeft,
-            child: Text("John"),
+            child: Text("JohnKompot"),
           ),
         ),
         body: Center(
-          child: CalendarPage(),
+          child: Calendar(),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, 'symptom_entry');
+          },
+          child: Icon(Icons.add),
         ),
       ),
     );
   }
 }
 
-class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+class SymptomEntryPage extends StatelessWidget {
+  const SymptomEntryPage({super.key});
 
   @override
-  State<CalendarPage> createState() => _CalendarPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Symptom Entry"),
+      ),
+      body: Center(
+        child: Text("Symptom Entry Form Goes Here"),
+      ),
+    );
+  }
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class Calendar extends StatefulWidget {
+  const Calendar({super.key});
+
+  @override
+  State<Calendar> createState() => _CalendarState();
+}
+
+class _CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   int _selectedMode = 0; // 0 for day, 1 for range, 2 for symptom
