@@ -4,6 +4,7 @@ import com.john.healthhack482026.model.Symptom;
 import com.john.healthhack482026.model.Summary;
 import com.john.healthhack482026.model.User;
 import com.john.healthhack482026.repository.SymptomLogRepository;
+import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+@Service
 public class SymptomService {
 
     // G: what were you thinking for the controllers
@@ -25,6 +27,13 @@ public class SymptomService {
         this.repo = repo;
         this.objectMapper = objectMapper;
         this.user = user;
+    }
+
+    // find by Id
+    public Symptom findById(UUID id){
+        Optional<Symptom> temp = repo.findByID(id);
+        if (temp.isEmpty()){throw new NoSuchElementException("No Symptom with id" + id + " that belongs you to.");}
+        return temp.get();
     }
 
     // log symptoms to repo
