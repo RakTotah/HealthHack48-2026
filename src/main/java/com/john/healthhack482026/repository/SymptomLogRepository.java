@@ -1,29 +1,54 @@
 package com.john.healthhack482026.repository;
 
-import com.john.healthhack482026.config.StorageVariable;
 import com.john.healthhack482026.model.Symptom;
 import org.springframework.stereotype.Repository;
 import tools.jackson.databind.ObjectMapper;
 
-import java.lang.ScopedValue;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class SymptomLogRepository {
+public class SymptomLogRepository implements RepositoryInterface {
     private ObjectMapper objectMapper;
     private List<Symptom> allSymptoms;
     private Path storagePath;
 
-    public SymptomLogRepository(StorageVariable storageVariable){
+    public SymptomLogRepository(UUID userID){
         this.objectMapper = new ObjectMapper();
-        System.out.println(storageVariable.file());
-//        this.storagePath = Path.of(storageVariable.file());
+        this.storagePath = Path.of("./data/symptoms.json");
+        this.load(userID);
     }
 
-    public void loadSymptoms(){
+    private void load(UUID userID){
+        this.allSymptoms = List.of();
+    }
 
+    @Override
+    public Optional<Symptom> findByID(UUID id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Symptom> getAll() {
+        return List.of();
+    }
+
+    @Override
+    public List<Symptom> findByDateRange(Instant start, Instant end) {
+        return List.of();
+    }
+
+    @Override
+    public boolean delete(UUID id) {
+        return false;
+    }
+
+    @Override
+    public Symptom save(Symptom symptom) {
+        return symptom;
     }
     // methods:
     // find by date range

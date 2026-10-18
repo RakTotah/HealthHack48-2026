@@ -27,13 +27,13 @@ public class SymptomController {
     // log symptoms to repo
     public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
         validate(name, severity, hourDuration, minuteDuration);
-        return repo.add(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration));
+        return repo.save(new Symptom(name.trim(), severity, numericalValue, notes, hourDuration, minuteDuration));
     }
 
     // edit entry
     public Symptom editEntry(UUID id, int severity, String notes){
         Symptom s = repo.findByID(id);
-        if (s == null){throw new NoSuchElementException("No Symptom with id" + id))}
+        if (s == null){throw new NoSuchElementException("No Symptom with id" + id);}
         validate(s.getName(), severity, 0, 0);
         s.changeSeverity(severity);
         s.updateNotes(notes);
