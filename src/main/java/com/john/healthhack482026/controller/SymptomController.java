@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,10 +21,12 @@ public class SymptomController {
     }
 
     @GetMapping("/symptoms/{id}")
-    public ResponseEntity<Symptom> getByID(@PathVariable String id){
-        return service.getHistory(UUID.fromString(id));
+    public Symptom getByID(@PathVariable String id){
+        return service.findById(UUID.fromString(id));
     }
 
     @GetMapping("/symptoms")
-    public ResponseEntity
+    public List<Symptom> getAllSymptoms(){
+        return service.getHistory();
+    }
 }
