@@ -11,6 +11,7 @@ void main() {
       'login': (context) => const LoginPage(),
       'register': (context) => const RegisterPage(),
     },
+    debugShowCheckedModeBanner: false,
   ));
 }
 
@@ -97,22 +98,28 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
-  int _selectedMode = 0; // 0 for day, 1 for range, 2 for symptom
+  bool _symptomMode = false; // false for date range, true for symptom
   String _selectedSymptom = ""; // Name of the selected symptom
   int _selectedRange = 0; // Number of days for range selection
 
-  _setMode(int mode) {
+  _setMode(bool mode) {
     setState(() {
-      _selectedMode = mode;
+      _symptomMode = mode;
+    });
+  }
+
+  _setRange(int range) {
+    setState(() {
+      _selectedRange = range;
     });
   }
 
   List<Symptom> _getSymptoms() {
     // Backend logic to fetch symptoms for the selected day can be called here
-    switch (_selectedMode) {
-      case 0:
-        // Fetch symptoms for the selected day
-        // return symptomsForRange(_selectedDay, 0);
+    switch (_symptomMode) {
+      case false:
+        // Fetch symptoms for the selected range
+        // return symptomsForRange(_selectedDay, _selectedRange);
         Symptom exampleSymptom = (
           name: "Headache",
           note: "Mild headache in the morning",
@@ -130,10 +137,7 @@ class _CalendarState extends State<Calendar> {
           minutes: 0
         );
         return [exampleSymptom, exampleSymptom2];
-      case 1:
-        // Fetch symptoms for the selected range
-        // return symptomsForRange(_selectedDay, _selectedRange);
-      case 2:
+      case true:
         // Fetch symptoms for the selected symptom
         // return symptomsForSymptom(_selectedSymptom);
     }
@@ -169,8 +173,7 @@ class _CalendarState extends State<Calendar> {
           },
         ),
         SizedBox(height: 20),
-        ModeSelector(_setMode),
-        Text("Selected Mode: ${_selectedMode == 0 ? "Day" : _selectedMode == 1 ? "Range" : "Symptom"}"),
+        ModeSelector(_setMode, _setRange),
         SizedBox(height: 20),
         SymptomList(_getSymptoms()),
       ],
@@ -179,38 +182,36 @@ class _CalendarState extends State<Calendar> {
 }
 
 class ModeSelector extends StatelessWidget {
-  const ModeSelector(this.onModeChanged, {super.key});
+  const ModeSelector(this.onModeChanged, this.onRangeChanged, {super.key});
 
-  final Function(int) onModeChanged;
-
+  final Function(bool) onModeChanged;
+  final Function(int) onRangeChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(
-          onPressed: () {
-            onModeChanged(0);
-          },
-          child: Text("Day"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                onModeChanged(false);
+              },
+              child: Text("Day"),
+            ),
+            SizedBox(width: 10),
+            ElevatedButton(
+              onPressed: () {
+                // Set mode to range
+                onModeChanged(true);
+              },
+              child: Text("Range"),
+            ),
+          ],
         ),
-        SizedBox(width: 10),
-        ElevatedButton(
-          onPressed: () {
-            // Set mode to range
-            onModeChanged(1);
-          },
-          child: Text("Range"),
-        ),
-        SizedBox(width: 10),
-        ElevatedButton(
-          onPressed: () {
-            // Set mode to symptom
-            onModeChanged(2);
-          },
-          child: Text("Symptom"),
-        ),
+        Text("Select a mode to view symptoms")
       ],
     );
   }
