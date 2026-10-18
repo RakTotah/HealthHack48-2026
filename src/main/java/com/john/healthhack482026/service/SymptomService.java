@@ -54,7 +54,7 @@ public class SymptomService {
     }
 
     // log symptoms to repo
-    public Symptom logSymptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration, User user) {
+    public Symptom logSymptom(String name, int severity, String notes, int hourDuration, int minuteDuration, User user) {
         validate(name, severity, hourDuration, minuteDuration, user);
         return repo.save(new Symptom(name.trim(), severity, notes, hourDuration, minuteDuration, user.getUserId()));
     }
