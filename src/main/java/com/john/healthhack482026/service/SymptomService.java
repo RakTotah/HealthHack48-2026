@@ -43,6 +43,11 @@ public class SymptomService {
         return repo.getAll().stream().filter(x -> (x.getTime().isAfter(start) && x.getTime().isBefore(end))).toList();
     }
 
+    // find by date
+    public List<Symptom> findByDay(LocalDate day, User user) {
+        return repo.getAll().stream().filter(symptom -> symptom.getTime().atZone(zone).toLocalDate().equals(day)).toList();
+    }
+
     // find by user id
     public List<Symptom> findByUser(User user){
         return repo.getAll().stream().filter(symptom -> (symptom.getUserID() == user.getUserId())).toList();
@@ -120,24 +125,7 @@ public class SymptomService {
     }
 
     /*
-
-
-    @Override
-    public Optional<Symptom> findByID(UUID symptomID) {
-        return getAll().stream().filter(x -> x.getId() == symptomID).findFirst();
-    }
-
-
-
     private List<Symptom> getEverythingStored(){
                 return Stream.concat(this.getAll().stream(), this.loadAll().stream()).collect(Collectors.toSet()).stream().toList();
-    }
-
-    @Override
-    public List<Symptom> findByDateRange(Instant start, Instant end) {
-        return this.getAll().stream().filter(x -> (
-                x.getTime().isAfter(start) && x.getTime().isBefore(end)
-                )).toList();
-    }
     }*/
 }
