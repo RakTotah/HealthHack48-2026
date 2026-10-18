@@ -2,8 +2,10 @@ package com.john.healthhack482026.repository;
 
 import com.john.healthhack482026.model.Symptom;
 import org.springframework.stereotype.Repository;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -23,7 +25,30 @@ public class SymptomLogRepository implements RepositoryInterface {
     }
 
     private void load(UUID userID){
-        this.allSymptoms = List.of();
+        // Creating parent directory if needed
+        if (!Files.isDirectory(storagePath.getParent())){
+            try {
+                Files.createDirectories(storagePath.getParent());
+            }
+            catch (Exception ignored){
+            }
+        }
+
+        if (!Files.exists(storagePath)){
+            try {
+                Files.writeString(storagePath, "[]");
+            }
+            catch (Exception ignored){
+            }
+        }
+
+
+        try {
+            List<Symptom> symptomLst = objectMapper.readValue(storagePath.toFile(),
+                    new TypeReference<List<Symptom>>(){}).stream().filter(x -> x.);
+        }
+        catch (Exception ignored){
+        }
     }
 
     @Override

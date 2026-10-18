@@ -13,9 +13,10 @@ public class Symptom {
     private int hourDuration;
     private int minuteDuration;
     private UUID id;
+    private UUID userID;
 
 
-    public Symptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration){
+    public Symptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration, UUID user){
         this.name = name;
         this.severity = severity;
         this.numericalValue = numericalValue;
@@ -24,6 +25,7 @@ public class Symptom {
         this.hourDuration = hourDuration;
         this.minuteDuration = minuteDuration;
         this.id = UUID.randomUUID();
+        this.userID = user;
     }
 
     public void changeSeverity(int severity){
@@ -57,4 +59,5 @@ public class Symptom {
     public int getMinuteDuration(){return this.minuteDuration;}
 
     public UUID getId(){ return this.id;}
+    public UUID getUserID(){ return this.userID; }
 }
