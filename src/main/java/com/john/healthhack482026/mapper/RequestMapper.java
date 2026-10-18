@@ -18,6 +18,10 @@ public class RequestMapper {
         if (!loginRepo.checkLogin(request.username(), request.password())){
             throw new IllegalArgumentException("Incorrect username or password");
         }
-        return loginRepo.getUser()
+        return new User(
+                request.username(),
+                request.password(),
+                loginRepo.getID(request.username(), request.password())
+                );
     }
 }

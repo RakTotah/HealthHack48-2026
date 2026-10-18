@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -65,7 +66,16 @@ public class LoginInfoRepository {
         return Objects.equals(test.getPassword(), password);
     }
 
-    public UUID getID
+    public UUID getID(String username, String password){
+        Optional<User> found = storedLogins.stream()
+                .filter(x -> Objects.equals(x.getUsername(), username)
+                        && Objects.equals(x.getPassword(), password))
+                .findFirst();
+        if (found.isEmpty()){
+            throw new IllegalArgumentException("Incorrect username or password.");
+        }
+        return found.get().getUserId();
+    }
 
     public boolean registerUser(User user){
         if (isRegistered(user.getUsername())){
