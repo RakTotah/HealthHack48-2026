@@ -36,6 +36,25 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
+  int _selectedMode = 0; // 0 for day, 1 for range, 2 for symptom
+  String _selectedSymptom = ""; // Name of the selected symptom
+  int _selectedRange = 0; // Number of days for range selection
+
+  List<Symptom> _getEvents() {
+    // Backend logic to fetch events for the selected day can be called here
+    switch (_selectedMode) {
+      case 0:
+        // Fetch events for the selected day
+        // return eventsForRange(_selectedDay, 0);
+      case 1:
+        // Fetch events for the selected range
+        // return eventsForRange(_selectedDay, _selectedRange);
+      case 2:
+        // Fetch events for the selected symptom
+        // return eventsForSymptom(_selectedSymptom);
+    }
+    return [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +72,12 @@ class _CalendarPageState extends State<CalendarPage> {
             _focusedDay = selectedDay;
           });
         },
+        eventLoader: (day) {
+        return _getEvents();
+        },
       ),
     );
   }
 }
+
+typedef Symptom = ({String name, String note, int severity, DateTime date, int hours, int minutes});
