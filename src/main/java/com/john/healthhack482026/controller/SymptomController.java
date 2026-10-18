@@ -33,7 +33,7 @@ public class SymptomController {
     // edit entry
     public Symptom editEntry(UUID id, int severity, String notes){
         Symptom s = repo.findByID(id);
-        if (s == null){throw new NoSuchElementException("No Symptom with id" + id);}
+        if (s == null){throw new NoSuchElementException("No Symptom with id" + id))}
         validate(s.getName(), severity, 0, 0);
         s.changeSeverity(severity);
         s.updateNotes(notes);
