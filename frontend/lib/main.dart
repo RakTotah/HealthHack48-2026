@@ -108,6 +108,12 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
+  _setSymptom(String symptom) {
+    setState(() {
+      _selectedSymptom = symptom;
+    });
+  }
+
   _setRange(String range) {
     int days = 0;
     switch (range) {
@@ -127,6 +133,11 @@ class _CalendarState extends State<Calendar> {
     setState(() {
       _selectedRange = days;
     });
+  }
+
+  List<String> _getUserSymptoms() {
+    // Backend logic to fetch user symptoms can be called here
+    return ["Headache", "Fatigue", "Nausea"]; // Example symptom options
   }
 
   List<Symptom> _getSymptoms() {
@@ -165,6 +176,8 @@ class _CalendarState extends State<Calendar> {
     return [];
   }
 
+  late final List<String> _symptomOptions = _getUserSymptoms(); // Example symptom options
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -188,7 +201,7 @@ class _CalendarState extends State<Calendar> {
           },
         ),
         SizedBox(height: 20),
-        ModeSelector(_symptomMode, _setMode, _setRange),
+        ModeSelector(_symptomMode, _selectedSymptom, _symptomOptions, _setMode, _setRange, _setSymptom),
         SizedBox(height: 20),
         SymptomList(_getSymptoms()),
       ],
@@ -197,11 +210,14 @@ class _CalendarState extends State<Calendar> {
 }
 
 class ModeSelector extends StatelessWidget {
-  const ModeSelector(this.mode, this.onModeChanged, this.onRangeChanged, {super.key});
+  const ModeSelector(this.mode, this.symptom, this.symptomOptions, this.onModeChanged, this.onRangeChanged, this.onSymptomChanged, {super.key});
 
   final bool mode;
+  final String symptom;
+  final List<String> symptomOptions;
   final Function(bool) onModeChanged;
   final Function(String) onRangeChanged;
+  final Function(String) onSymptomChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -227,8 +243,8 @@ class ModeSelector extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(height: 10),
         if (mode == false) ...[
-          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -270,6 +286,21 @@ class ModeSelector extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ]
+        else ...[
+          DropdownMenu<String>(
+            initialSelection: symptom,
+            label: Text("Select Symptom"),
+            dropdownMenuEntries: [
+              for (var symptom in symptomOptions) DropdownMenuEntry(value: symptom, label: symptom),
+              // Add more symptoms as needed
+            ],
+            onSelected: (String? value) {
+              if (value != null) {
+                onSymptomChanged(value);  
+              }
+            },
           ),
         ]
       ],
