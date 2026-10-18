@@ -11,6 +11,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class SymptomLogRepository implements RepositoryInterface {
@@ -25,7 +27,10 @@ public class SymptomLogRepository implements RepositoryInterface {
     }
 
     private void load(UUID userID){
-        // Creating parent directory if needed
+        this.allSymptoms = loadAll().stream().filter(x -> x.getUserID() == userID).toList();
+    }
+
+    private List<Symptom> loadAll(){
         if (!Files.isDirectory(storagePath.getParent())){
             try {
                 Files.createDirectories(storagePath.getParent());
@@ -42,23 +47,32 @@ public class SymptomLogRepository implements RepositoryInterface {
             }
         }
 
-
         try {
-            List<Symptom> symptomLst = objectMapper.readValue(storagePath.toFile(),
-                    new TypeReference<List<Symptom>>(){}).stream().filter(x -> x.);
+            return objectMapper.readValue(storagePath.toFile(),
+                            new TypeReference<List<Symptom>>(){});
         }
         catch (Exception ignored){
         }
+
+        return List.of();
+    }
+
+    private void persistToDisk(){
+        objectMapper.writeValue(this.storagePath.toFile(), getEverythingStored());
     }
 
     @Override
-    public Optional<Symptom> findByID(UUID id) {
-        return Optional.empty();
+    public Optional<Symptom> findByID(UUID symptomID) {
+        return getAll().stream().filter(x -> x.getId() == symptomID).findFirst();
     }
 
     @Override
     public List<Symptom> getAll() {
-        return List.of();
+        return this.allSymptoms;
+    }
+
+    private List<Symptom> getEverythingStored(){
+                return Stream.concat(this.getAll().stream(), this.loadAll().stream()).collect(Collectors.toSet()).stream().toList();
     }
 
     @Override
@@ -66,22 +80,29 @@ public class SymptomLogRepository implements RepositoryInterface {
         return List.of();
     }
 
+    private boolean isPresent(UUID orderID){
+        return !getEverythingStored().stream().filter(x -> x.getId() == orderID).toList().isEmpty();
+    }
     @Override
     public boolean delete(UUID id) {
-        return false;
+        Optional<Symptom> toRemove = this.findByID(id);
+        if (toRemove.isEmpty()){
+            return false;
+        }
+
+        this.allSymptoms.remove(toRemove.get());
+        persistToDisk();
+        return true;
     }
 
     @Override
     public Symptom save(Symptom symptom) {
+        if (isPresent(symptom.getId())){
+            throw new IllegalArgumentException();
+        }
+        this.allSymptoms.add(symptom);
+        persistToDisk();
         return symptom;
     }
-    // methods:
-    // find by date range
-    // find by symptom
-    // find by severity
-    // delete
-    // add
-    // get all
-    // count
-    // clear
+
 }
