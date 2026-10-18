@@ -13,7 +13,7 @@ public class Symptom {
     private int hourDuration;
     private int minuteDuration;
     private UUID id;
-    private UUID user;
+    private User user;
 
 
     public Symptom(String name, int severity, String numericalValue, String notes, int hourDuration, int minuteDuration, UUID user){
@@ -59,4 +59,5 @@ public class Symptom {
     public int getMinuteDuration(){return this.minuteDuration;}
 
     public UUID getId(){ return this.id;}
+    public User getUser(){ return this.user; }
 }

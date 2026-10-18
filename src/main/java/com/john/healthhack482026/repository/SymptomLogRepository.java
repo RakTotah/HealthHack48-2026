@@ -45,7 +45,7 @@ public class SymptomLogRepository implements RepositoryInterface {
 
         try {
             List<Symptom> symptomLst = objectMapper.readValue(storagePath.toFile(),
-                    new TypeReference<List<Symptom>>(){}).stream().filter(x -> x.user);
+                    new TypeReference<List<Symptom>>(){}).stream().filter(x -> x.);
         }
         catch (Exception ignored){
         }
