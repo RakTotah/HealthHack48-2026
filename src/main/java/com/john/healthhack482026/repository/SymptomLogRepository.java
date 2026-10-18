@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
-public class SymptomLogRepository implements RepositoryInterface {
+public class SymptomLogRepository {
     private ObjectMapper objectMapper;
     private List<Symptom> allSymptoms;
     private Path storagePath;
@@ -23,11 +23,7 @@ public class SymptomLogRepository implements RepositoryInterface {
     public SymptomLogRepository(UUID userID){
         this.objectMapper = new ObjectMapper();
         this.storagePath = Path.of("./data/symptoms.json");
-        this.load(userID);
-    }
-
-    private void load(UUID userID){
-        this.allSymptoms = loadAll().stream().filter(x -> x.getUserID() == userID).toList();
+        this.allSymptoms = loadAll();
     }
 
     private List<Symptom> loadAll(){
@@ -58,36 +54,19 @@ public class SymptomLogRepository implements RepositoryInterface {
     }
 
     private void persistToDisk(){
-        objectMapper.writeValue(this.storagePath.toFile(), getEverythingStored());
+        objectMapper.writeValue(this.storagePath.toFile(), getAll());
     }
 
-    @Override
-    public Optional<Symptom> findByID(UUID symptomID) {
-        return getAll().stream().filter(x -> x.getId() == symptomID).findFirst();
-    }
-
-    @Override
     public List<Symptom> getAll() {
         return this.allSymptoms;
     }
 
-    private List<Symptom> getEverythingStored(){
-                return Stream.concat(this.getAll().stream(), this.loadAll().stream()).collect(Collectors.toSet()).stream().toList();
-    }
-
-    @Override
-    public List<Symptom> findByDateRange(Instant start, Instant end) {
-        return this.getAll().stream().filter(x -> (
-                x.getTime().isAfter(start) && x.getTime().isBefore(end)
-                )).toList();
-    }
-
     private boolean isPresent(UUID orderID){
-        return !getEverythingStored().stream().filter(x -> x.getId() == orderID).toList().isEmpty();
+        return !getAll().stream().filter(x -> x.getId() == orderID).toList().isEmpty();
     }
-    @Override
+
     public boolean delete(UUID id) {
-        Optional<Symptom> toRemove = this.findByID(id);
+        Optional<Symptom> toRemove = getAll().stream().filter(x -> x.getId()==id).findFirst();
         if (toRemove.isEmpty()){
             return false;
         }
@@ -97,7 +76,6 @@ public class SymptomLogRepository implements RepositoryInterface {
         return true;
     }
 
-    @Override
     public Symptom save(Symptom symptom) {
         if (isPresent(symptom.getId())){
             throw new IllegalArgumentException();
@@ -109,7 +87,7 @@ public class SymptomLogRepository implements RepositoryInterface {
 
 
     // since we have find by id we can use this method to update the current instance as
-    /*
+
     public Symptom update(Symptom symptom) {
         for (int i = 0; i < allSymptoms.size(); i++) {
             if (allSymptoms.get(i).getId().equals(symptom.getId())) {
@@ -120,5 +98,5 @@ public class SymptomLogRepository implements RepositoryInterface {
         }
         return symptom;
     }
-    */
+
 }
