@@ -17,10 +17,9 @@ public class SymptomLogRepository implements RepositoryInterface {
     private List<Symptom> allSymptoms;
     private Path storagePath;
 
-    public SymptomLogRepository(StorageVariable storageVariable){
+    public SymptomLogRepository(){
         this.objectMapper = new ObjectMapper();
-        System.out.println(storageVariable.file());
-//        this.storagePath = Path.of(storageVariable.file());
+        this.storagePath = Path.of("./data/symptoms.json");
     }
 
     public void loadSymptoms(){
@@ -48,8 +47,8 @@ public class SymptomLogRepository implements RepositoryInterface {
     }
 
     @Override
-    public boolean save(Symptom symptom) {
-        return false;
+    public Symptom save(Symptom symptom) {
+        return symptom;
     }
     // methods:
     // find by date range

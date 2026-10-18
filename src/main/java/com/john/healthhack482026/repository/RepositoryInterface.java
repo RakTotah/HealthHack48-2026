@@ -12,5 +12,5 @@ public interface RepositoryInterface {
     public List<Symptom> getAll();
     public List<Symptom> findByDateRange(Instant start, Instant end);
     public boolean delete(UUID id);
-    public boolean save(Symptom symptom);
+    public Symptom save(Symptom symptom);
 }
