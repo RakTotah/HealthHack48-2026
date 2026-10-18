@@ -23,12 +23,10 @@ public class SymptomService {
     private final SymptomLogRepository repo;
     private final ObjectMapper objectMapper;
     private final ZoneId zone = ZoneId.systemDefault();
-    private User user;
 
-    public SymptomService(SymptomLogRepository repo, ObjectMapper objectMapper, User user) {
+    public SymptomService(SymptomLogRepository repo, ObjectMapper objectMapper) {
         this.repo = repo;
         this.objectMapper = objectMapper;
-        this.user = user;
     }
 
     // find by symptomId

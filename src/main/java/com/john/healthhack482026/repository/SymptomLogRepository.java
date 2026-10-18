@@ -17,7 +17,7 @@ public class SymptomLogRepository {
     private List<Symptom> allSymptoms;
     private Path storagePath;
 
-    public SymptomLogRepository(UUID userID){
+    public SymptomLogRepository(){
         this.objectMapper = new ObjectMapper();
         this.storagePath = Path.of("./data/symptoms.json");
         this.allSymptoms = loadAll();
