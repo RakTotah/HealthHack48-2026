@@ -1,4 +1,4 @@
-package com.john.healthhack482026.repoository;
+package com.john.healthhack482026.repository;
 
 import com.john.healthhack482026.config.StorageVariable;
 import com.john.healthhack482026.model.Symptom;

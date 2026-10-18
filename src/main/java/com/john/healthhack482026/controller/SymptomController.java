@@ -2,7 +2,7 @@ package com.john.healthhack482026.controller;
 
 import com.john.healthhack482026.model.Symptom;
 import com.john.healthhack482026.model.Summary;
-import com.john.healthhack482026.repoository.SymptomLogRepository;
+import com.john.healthhack482026.repository.SymptomLogRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,7 +38,7 @@ public class SymptomController {
     private Summary getDailySummary(LocalDate day){
         throw new UnsupportedOperationException();
     }
-    private Summary getWeeklySummary(LocalDate weekStart{
+    private Summary getWeeklySummary(LocalDate weekStart) {
         throw new UnsupportedOperationException();
     }
     private Summary getMonthlySummary(LocalDate monthStart){
