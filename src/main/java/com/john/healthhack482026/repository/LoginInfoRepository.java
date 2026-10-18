@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Repository
 public class LoginInfoRepository {
@@ -63,6 +64,8 @@ public class LoginInfoRepository {
         User test = getUser(username);
         return Objects.equals(test.getPassword(), password);
     }
+
+    public UUID getID
 
     public boolean registerUser(User user){
         if (isRegistered(user.getUsername())){

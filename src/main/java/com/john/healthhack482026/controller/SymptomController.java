@@ -2,6 +2,7 @@ package com.john.healthhack482026.controller;
 
 import com.john.healthhack482026.model.Symptom;
 import com.john.healthhack482026.model.User;
+import com.john.healthhack482026.model.UserRequest;
 import com.john.healthhack482026.repository.SymptomLogRepository;
 import com.john.healthhack482026.service.SymptomService;
 import jakarta.validation.Valid;
@@ -24,8 +25,12 @@ public class SymptomController {
     }
 
     @GetMapping("/symptoms")
-    public Symptom getByID(@Valid @RequestBody User user){
+    public List<Symptom> getUserSymptoms(@Valid @RequestBody UserRequest request){
+        return service.findByUser(user);
+    }
 
-        return service.findById(UUID.fromString(id));
+    @GetMapping("")
+    public Symptom getSymptomByID(@Valid @RequestBody User user) {
+        return service.findById(user.getUserId())
     }
 }
