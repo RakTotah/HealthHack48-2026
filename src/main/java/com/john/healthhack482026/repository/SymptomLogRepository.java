@@ -32,7 +32,7 @@ public class SymptomLogRepository implements RepositoryInterface {
     }
 
     @Override
-    public List<Symptom> getAll() {
+    public List<Symptom> getAll(UUID userID) {
         return List.of();
     }
 
