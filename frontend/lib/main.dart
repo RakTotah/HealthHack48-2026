@@ -101,6 +101,12 @@ class _CalendarState extends State<Calendar> {
   String _selectedSymptom = ""; // Name of the selected symptom
   int _selectedRange = 0; // Number of days for range selection
 
+  _setMode(int mode) {
+    setState(() {
+      _selectedMode = mode;
+    });
+  }
+
   List<Symptom> _getSymptoms() {
     // Backend logic to fetch symptoms for the selected day can be called here
     switch (_selectedMode) {
@@ -163,7 +169,8 @@ class _CalendarState extends State<Calendar> {
           },
         ),
         SizedBox(height: 20),
-        //ModeSelector(),
+        ModeSelector(_setMode),
+        Text("Selected Mode: ${_selectedMode == 0 ? "Day" : _selectedMode == 1 ? "Range" : "Symptom"}"),
         SizedBox(height: 20),
         SymptomList(_getSymptoms()),
       ],
@@ -172,7 +179,10 @@ class _CalendarState extends State<Calendar> {
 }
 
 class ModeSelector extends StatelessWidget {
-  const ModeSelector({super.key});
+  const ModeSelector(this.onModeChanged, {super.key});
+
+  final Function(int) onModeChanged;
+
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +191,7 @@ class ModeSelector extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
-            // Set mode to day
+            onModeChanged(0);
           },
           child: Text("Day"),
         ),
@@ -189,6 +199,7 @@ class ModeSelector extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             // Set mode to range
+            onModeChanged(1);
           },
           child: Text("Range"),
         ),
@@ -196,6 +207,7 @@ class ModeSelector extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             // Set mode to symptom
+            onModeChanged(2);
           },
           child: Text("Symptom"),
         ),
@@ -225,15 +237,16 @@ class SymptomDisplay extends StatelessWidget {
   const SymptomDisplay({super.key, required this.symptom});
 
   final Symptom symptom;
-  static final DateFormat formatter = DateFormat('dd-MM-yyyy');
+  static final DateFormat day = DateFormat('dd-MM-yyyy');
+  static final DateFormat time = DateFormat('HH:mm');
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(symptom.name),
+      title: Text("${symptom.name} - ${symptom.severity}/10"),
       subtitle: Text("Notes:\n${symptom.note}"),
-      trailing: Text("${formatter.format(symptom.date)}\n${symptom.hours}h ${symptom.minutes}m"),
-      leading: Text("${symptom.severity}/10"),
+      trailing: Text("${day.format(symptom.date)}\n${time.format(symptom.date)}"),
+      leading: Text("${symptom.hours}h ${symptom.minutes}m"),
     );
   }
 }
