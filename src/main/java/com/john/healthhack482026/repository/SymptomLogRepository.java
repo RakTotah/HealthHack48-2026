@@ -18,7 +18,8 @@ public class SymptomLogRepository {
 
     public SymptomLogRepository(StorageVariable storageVariable){
         this.objectMapper = new ObjectMapper();
-        this.storagePath = Path.of(storageVariable.file);
+        System.out.println(storageVariable.file());
+//        this.storagePath = Path.of(storageVariable.file());
     }
 
     public void loadSymptoms(){
