@@ -195,6 +195,15 @@ class _SymptomEntryFormState extends State<SymptomEntryForm> {
                   },
                 ),
               ),
+
+              ElevatedButton(
+                onPressed: () {
+                  DateTime date = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, _hour, _min, 0);
+                  provider.addSymptom(Symptom(id: 0, name: _newSymptomName, note: _notes, severity: _severity, date: date, hours: _durationHours, minutes: _durationMins));
+                  Navigator.pop(context);
+                },
+                child: Text("Submit")
+              )
             ],
           ),
         );
