@@ -16,7 +16,6 @@ public class LoginService {
     }
 
     public User register(String username, String password){
-       try{
            User temp = new User(
                    username,
                    password,
@@ -24,12 +23,14 @@ public class LoginService {
            );
            loginRepo.registerUser(temp);
            return temp;
-       } catch (Exception e) {
-           throw new RuntimeException();
-       }
     }
 
     public boolean checkUserDetails(String username, String password){
         return loginRepo.checkLogin(username, password);
     }
+
+    public void deleteUser(String username, String password){
+        loginRepo.deleteUser(username, password);
+    }
+
 }
