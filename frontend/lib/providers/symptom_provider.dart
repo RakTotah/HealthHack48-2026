@@ -11,39 +11,39 @@ class SymptomProvider with ChangeNotifier {
   List<Symptom> _symptoms = [];
   List<Symptom> get symptoms => _symptoms;
   List<String> get symptomNames => _symptomNames;
-  User _user = User((username: "LoggedOut", password: "Default"));
+  User _user = User(username: "LoggedOut", password: "Default");
 
 
-  Future<void> registerUser(String username, String password) {
+  Future<void> registerUser() async {
     try {
-      _user = await _userService.register(username, password);
+      await _userService.register(_user.username, _user.password);
       notifyListeners();
     } catch (e) {
       print ('Error registering: $e');
     }
   }
 
-  Future<void> getSymptomsByDate(String date) async {
+  Future<void> getSymptomsByDate(String date, String username, String password) async {
     try {
-      _symptoms = await _symptomService.getSymptomsByDate(date);
+      _symptoms = await _symptomService.getSymptomsByDate(date, _user.username, _user.password);
       notifyListeners();
     } catch (e) {
       print('Error get symptoms: $e');
     }
   }
 
-  Future<void> fetchSymptomsBySymptom(String symptomName) async {
-    try {
-      _symptoms = await _symptomService.fetchSymptomsBySymptom(symptomName);
-      notifyListeners();
-    } catch (e) {
-      print('Error fetching symptoms: $e');
-    }
-  }
+  // Future<void> fetchSymptomsBySymptom(String symptomName) async {
+  //   try {
+  //     _symptoms = await _symptomService.fetchSymptomsBySymptom(symptomName);
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print('Error fetching symptoms: $e');
+  //   }
+  // }
 
   Future<void> addSymptom(Symptom symptom) async {
     try {
-      final newSymptom = await _symptomService.logSymptom(symptom);
+      final newSymptom = await _symptomService.logSymptom(symptom, _user.username, _user.password);
       _symptoms.add(newSymptom);
       notifyListeners();
     } catch (e) {
@@ -51,22 +51,22 @@ class SymptomProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateSymptom(Symptom symptom) async {
-    try {
-      final updatedSymptom = await _symptomService.updateSymptom(symptom);
-      final index = _symptoms.indexWhere((s) => s.id == updatedSymptom.id);
-      if (index != -1) {
-        _symptoms[index] = updatedSymptom;
-        notifyListeners();
-      }
-    } catch (e) {
-      print('Error updating symptom: $e');
-    }
-  }
+  // Future<void> updateSymptom(Symptom symptom) async {
+  //   try {
+  //     final updatedSymptom = await _symptomService.updateSymptom(symptom);
+  //     final index = _symptoms.indexWhere((s) => s.id == updatedSymptom.id);
+  //     if (index != -1) {
+  //       _symptoms[index] = updatedSymptom;
+  //       notifyListeners();
+  //     }
+  //   } catch (e) {
+  //     print('Error updating symptom: $e');
+  //   }
+  // }
 
-  Future<void> deleteSymptomLog(int id) async {
+  Future<void> deleteSymptomLog(String id) async {
     try {
-      await _symptomService.deleteSymptomLog(id);
+      await _symptomService.deleteSymptomLog(id, _user.username, _user.password);
       _symptoms.removeWhere((symptom) => symptom.id == id);
       notifyListeners();
     } catch (e) {
