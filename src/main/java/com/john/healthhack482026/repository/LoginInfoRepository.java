@@ -64,7 +64,7 @@ public class LoginInfoRepository {
 
     public boolean checkLogin(String username, String password){
         if (!isRegistered(username)){
-            throw new UnregisteredUserException("You are not registered");
+            throw new UnregisteredUserException("You are not registered.");
         }
         User test = getUser(username);
         return Objects.equals(test.getPassword(), password);
@@ -81,20 +81,24 @@ public class LoginInfoRepository {
         return found.get().getUserId();
     }
 
-    public boolean registerUser(User user){
+    public void registerUser(User user){
         if (isRegistered(user.getUsername())){
-            throw new DuplicateIDException("This username is taken.");
+            throw new DuplicateIDException("The username %s is taken.".formatted(user.getUsername()));
         }
         storedLogins.add(user);
         persistToDisk();
-        return true;
     }
 
-    public boolean deleteUser(User user){
-        if (!isRegistered(user.getUsername())){
-            throw new UnregisteredUserException("No user with this username is registered");
+    public boolean deleteUser(String username, String password){
+        if (!isRegistered(username)){
+            throw new UnregisteredUserException("No user with the username %s is registered.".formatted(username));
         }
-        storedLogins.remove(user);
+
+        if (!checkLogin(username, password)){
+            throw new InvalidLoginDetailsException("Incorrect username or password.");
+        }
+
+        storedLogins.remove(getUser(username));
         persistToDisk();
         return true;
     }
