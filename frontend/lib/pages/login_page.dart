@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/symptom.dart';
 import '../providers/symptom_provider.dart';
 
 class LoginPage extends StatelessWidget {

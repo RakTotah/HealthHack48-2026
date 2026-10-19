@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/symptom.dart';
 import '../providers/symptom_provider.dart';
@@ -116,6 +117,9 @@ class _HomePageState extends State<HomePage> {
                               border: OutlineInputBorder(),
                             ),
                             keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             onSubmitted: (value) {
                               int? customDays = int.tryParse(value);
                               if (customDays != null && customDays > 0) {
