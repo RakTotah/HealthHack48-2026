@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/symptom.dart';
 import '../providers/symptom_provider.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<SymptomProvider>().fetchSymptomsByDate(DateTime.now(), 1));
+    Future.microtask(() => context.read<SymptomProvider>().fetchSymptomsNames());
+  }
+
+  DateTime _selectedDay = DateTime.now();
+    DateTime _focusedDay = DateTime.now();
+    String _selectedSymptom = "";
+    int _selectedRange = 1;
+    bool _symptomMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +36,139 @@ class HomePage extends StatelessWidget {
             child: Text("JohnKompot"),
           ),
         ),
-        body: Calendar(),
+        body: Consumer<SymptomProvider>(
+        builder: (context, provider, child) {
+          if (provider.symptoms.isEmpty) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TableCalendar(
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.now(),
+                focusedDay: _focusedDay,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = selectedDay;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _symptomMode = false;
+                          });
+                        },
+                        child: Text("By Date"),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Set mode to symptom mode
+                          setState(() {
+                            _symptomMode = false;
+                          });
+                        },
+                        child: Text("By Symptom"),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  if (_symptomMode == false) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedRange = 1;
+                            });
+                            provider.fetchSymptomsByDate(_selectedDay, 1);
+                          },
+                          child: Text("Day"),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedRange = 7;
+                            });
+                            provider.fetchSymptomsByDate(_selectedDay, 7);
+                          },
+                          child: Text("Week"),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedRange = DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month);
+                            });
+                          },
+                          child: Text("Month"),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          width: 100,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              labelText: "Custom",
+                              border: OutlineInputBorder(),
+                            ),
+                            keyboardType: TextInputType.number,
+                            onSubmitted: (value) {
+                              int? customDays = int.tryParse(value);
+                              if (customDays != null && customDays > 0) {
+                                _selectedRange = customDays;
+                              }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]
+                    else ...[
+                      DropdownMenu<String>(
+                        initialSelection: null,
+                        label: Text("Select Symptom"),
+                        dropdownMenuEntries: [
+                          for (String symptom in provider.symptomNames) DropdownMenuEntry(value: symptom, label: symptom),
+                        ],
+                        onSelected: (String? value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedSymptom = value;
+                            });
+                            provider.fetchSymptomsBySymptom(value);
+                          }
+                        },
+                      ),
+                    ]
+                  ],
+                ),
+                SizedBox(height: 20),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: provider.symptoms.length,
+                  itemBuilder: (context, index) {
+                    return SymptomDisplay(symptom: provider.symptoms[index]);
+                  },
+                ),
+              ],
+            );
+          },
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, 'symptom_entry');
@@ -27,199 +176,6 @@ class HomePage extends StatelessWidget {
           child: Icon(Icons.add),
         ),
       ),
-    );
-  }
-}
-
-
-class Calendar extends StatefulWidget {
-  const Calendar({super.key});
-
-  @override
-  State<Calendar> createState() => _CalendarState();
-}
-
-class _CalendarState extends State<Calendar> {
-  DateTime _selectedDay = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
-  String _selectedSymptom = "";
-  int _selectedRange = 1;
-  
-  _setSymptom(String symptom) {
-    setState(() {
-      _selectedSymptom = symptom;
-    });
-  }
-
-  _setRange(String range) {
-    int days = 0;
-    switch (range) {
-      case "day":
-        days = 1;
-        break;
-      case "week":
-        days = 7;
-        break;
-      case "month":
-        days = DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month);
-        break;
-      default:
-        var value = int.tryParse(range);
-        if (value != null) {
-          days = value;
-        }
-    }
-    setState(() {
-      _selectedRange = days;
-    });
-
-  List<String> _getUserSymptoms() {
-    // Backend logic to fetch user symptoms can be called here
-    return ["Headache", "Fatigue", "Nausea"]; // Example symptom options
-  }
-
-  late final List<String> _symptomOptions = _getUserSymptoms(); // Example symptom options
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        TableCalendar(
-          firstDay: DateTime.utc(2020, 1, 1),
-          lastDay: DateTime.now(),
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = selectedDay;
-            });
-          },
-          eventLoader: (day) {
-          return _getSymptomsCalendar();
-          },
-        ),
-        SizedBox(height: 20),
-        ModeSelector(_symptomMode, _setRange),
-        SizedBox(height: 20),
-        SymptomList(),
-      ],
-    );
-  }
-}
-}
-
-class ModeSelector extends StatelessWidget {
-  ModeSelector(this.mode, this.onRangeChanged, {super.key});
-
-  bool mode;
-  final Function onRangeChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                ;
-              },
-              child: Text("By Date"),
-            ),
-            SizedBox(width: 10),
-            ElevatedButton(
-              onPressed: () {
-                // Set mode to symptom mode
-                ;
-              },
-              child: Text("By Symptom"),
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        if (mode == false) ...[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  onRangeChanged("day");
-                },
-                child: Text("Day"),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  onRangeChanged("week");
-                },
-                child: Text("Week"),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  onRangeChanged("month");
-                },
-                child: Text("Month"),
-              ),
-              SizedBox(width: 10),
-              Container(
-                width: 100,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: "Custom",
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (value) {
-                    int? customDays = int.tryParse(value);
-                    if (customDays != null && customDays > 0) {
-                      onRangeChanged("custom");
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        ]
-        else ...[
-          DropdownMenu<String>(
-            initialSelection: symptom,
-            label: Text("Select Symptom"),
-            dropdownMenuEntries: [
-              for (var symptom in symptomOptions) DropdownMenuEntry(value: symptom, label: symptom),
-              // Add more symptoms as needed
-            ],
-            onSelected: (String? value) {
-              if (value != null) {
-                onSymptomChanged(value);
-              }
-            },
-          ),
-        ]
-      ],
-    );
-  }
-}
-
-class SymptomList extends StatelessWidget {
-  const SymptomList(this.symptoms, {super.key}); 
-
-  final List<Symptom> symptoms;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: symptoms.length,
-      itemBuilder: (context, index) {
-        return SymptomDisplay(symptom: symptoms[index]);
-      },
     );
   }
 }
