@@ -24,15 +24,21 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<Boolean> attemptLogin(@Valid @RequestBody UserRequest request){
-        boolean successful = service.checkUserDetails(request.username(), request.password());
+    public ResponseEntity<Boolean> attemptLogin(
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ){
+        boolean successful = service.checkUserDetails(username, password);
         return ResponseEntity.status(successful?HttpStatus.ACCEPTED:HttpStatus.FORBIDDEN).body(successful);
     }
 
     @DeleteMapping("/deregister")
-    public ResponseEntity<String> deleteUser(@Valid @RequestBody UserRequest request) {
-        service.deleteUser(request.username(), request.password());
+    public ResponseEntity<String> deleteUser(
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ) {
+        service.deleteUser(username, password);
         return ResponseEntity.status(201)
-                .body("User with username %s successfully deregistered".formatted(request.username()));
+                .body("User with username %s successfully deregistered".formatted(username));
     }
 }

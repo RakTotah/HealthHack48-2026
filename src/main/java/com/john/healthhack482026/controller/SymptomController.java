@@ -35,39 +35,61 @@ public class SymptomController {
     }
 
     @GetMapping("/symptoms")
-    public ResponseEntity<List<Symptom>> getUserSymptoms(@Valid @RequestBody UserRequest request){
-        return ResponseEntity.status(HttpStatus.OK).body(service.findByUser(requestMapper.toUser(request)));
+    public ResponseEntity<List<Symptom>> getUserSymptoms(
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(service.findByUser(requestMapper
+                        .toUser(new UserRequest(username, password))));
     }
 
     @GetMapping("/symptoms/{id}")
-    public ResponseEntity<Symptom> getSymptomByID(@Valid @RequestBody UserRequest request, @PathVariable String symptomID) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.findById(UUID.fromString(symptomID), requestMapper.toUser(request)));
+    public ResponseEntity<Symptom> getSymptomByID(
+            @PathVariable String symptomID,
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(service.findById(UUID.fromString(symptomID), requestMapper
+                        .toUser(new UserRequest(username, password))));
     }
 
     @GetMapping("/symptoms/date/{date}")
-    public ResponseEntity<List<Symptom>> getSymptomsByDate(@Valid @RequestBody UserRequest request, @PathVariable String date){
+    public ResponseEntity<List<Symptom>> getSymptomsByDate(
+            @PathVariable String date,
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(service.findByDateRange(Instant.parse(date), Instant.parse(date), requestMapper.toUser(request)));
+            return ResponseEntity.status(HttpStatus.OK).body(service.findByDateRange(Instant.parse(date), Instant.parse(date), requestMapper.toUser(new UserRequest(username, password))));
         } catch (Exception e) {
             throw new RuntimeException("Date cannot be parsed, attempt DD-MM-YY. Example: 20-09-05 is the 20th of September 2005");
         }
     }
 
     @PostMapping("/symptoms")
-    public ResponseEntity<Symptom> logSymptom(@Valid @RequestBody SymptomLogRequest request){
+    public ResponseEntity<Symptom> logSymptom(
+            @Valid @RequestBody SymptomLogRequest request,
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.logSymptom(
                 request.name(),
                 request.severity(),
                 request.notes(),
                 request.hourDuration(),
                 request.minuteDuration(),
-                requestMapper.toUser(new UserRequest(request.username(), request.password()))
+                requestMapper.toUser(new UserRequest(username, password))
         ));
     }
 
-    @DeleteMapping("/symptoms/{symptomID}")
-    public ResponseEntity<Void> deleteSymptomLog(@Valid @RequestBody UserRequest request, @PathVariable UUID symptomID){
-        service.removeEntry(symptomID, requestMapper.toUser(request));
+    @DeleteMapping("/symptoms")
+    public ResponseEntity<Void> deleteSymptomLog(
+            @Valid @RequestBody UUID symptomID,
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password){
+        service.removeEntry(symptomID, requestMapper.toUser(new UserRequest(username, password)));
         return ResponseEntity.noContent().build();
     }
 }
