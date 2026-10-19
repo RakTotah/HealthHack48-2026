@@ -68,6 +68,20 @@ public class SymptomController {
         }
     }
 
+    @GetMapping("/symptoms/date/{from}#{to}")
+    public ResponseEntity<List<Symptom>> getSymptomsByDateRange(
+            @PathVariable String from,
+            @PathVariable String to,
+            @RequestHeader(value = "username") String username,
+            @RequestHeader(value = "password") String password
+    ){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(service.findByDateRange(Instant.parse(from), Instant.parse(to), requestMapper.toUser(new UserRequest(username, password))));
+        } catch (Exception e) {
+            throw new RuntimeException("Date cannot be parsed, attempt DD-MM-YY. Example: 20-09-05 is the 20th of September 2005");
+        }
+    }
+
     @PostMapping("/symptoms")
     public ResponseEntity<Symptom> logSymptom(
             @Valid @RequestBody SymptomLogRequest request,
