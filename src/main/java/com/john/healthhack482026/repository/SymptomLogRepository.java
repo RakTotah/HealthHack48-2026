@@ -1,5 +1,7 @@
 package com.john.healthhack482026.repository;
 
+import com.john.healthhack482026.Exceptions.DuplicateIDException;
+import com.john.healthhack482026.Exceptions.StorageException;
 import com.john.healthhack482026.model.Symptom;
 import org.springframework.stereotype.Repository;
 import tools.jackson.core.type.TypeReference;
@@ -28,7 +30,8 @@ public class SymptomLogRepository {
             try {
                 Files.createDirectories(storagePath.getParent());
             }
-            catch (Exception ignored){
+            catch (Exception e){
+                throw new StorageException(e.getMessage());
             }
         }
 
@@ -36,18 +39,19 @@ public class SymptomLogRepository {
             try {
                 Files.writeString(storagePath, "[]");
             }
-            catch (Exception ignored){
+            catch (Exception e){
+                throw new StorageException(e.getMessage());
             }
         }
 
         try {
             return objectMapper.readValue(storagePath.toFile(),
                             new TypeReference<List<Symptom>>(){});
-        }
-        catch (Exception ignored){
-        }
 
-        return List.of();
+        }
+        catch (Exception e){
+                throw new StorageException(e.getMessage());
+            }
     }
 
     private void persistToDisk(){
@@ -75,7 +79,7 @@ public class SymptomLogRepository {
 
     public Symptom save(Symptom symptom) {
         if (isPresent(symptom.getSymptomId())){
-            throw new IllegalArgumentException();
+            throw new DuplicateIDException("A symptom with this ID already exists.");
         }
         this.allSymptoms.add(symptom);
         persistToDisk();

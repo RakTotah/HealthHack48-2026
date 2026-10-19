@@ -1,5 +1,6 @@
 package com.john.healthhack482026.mapper;
 
+import com.john.healthhack482026.Exceptions.InvalidLoginDetailsException;
 import com.john.healthhack482026.model.User;
 import com.john.healthhack482026.model.UserRequest;
 import com.john.healthhack482026.repository.LoginInfoRepository;
@@ -16,7 +17,7 @@ public class RequestMapper {
 
     public User toUser(UserRequest request){
         if (!loginRepo.checkLogin(request.username(), request.password())){
-            throw new IllegalArgumentException("Incorrect username or password");
+            throw new InvalidLoginDetailsException("Incorrect username or password");
         }
         return new User(
                 request.username(),
