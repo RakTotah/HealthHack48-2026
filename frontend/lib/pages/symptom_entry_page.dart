@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/symptom.dart';
 import '../providers/symptom_provider.dart';
-import 'package:intl/intl.dart';
-
 
 class SymptomEntryPage extends StatelessWidget {
   const SymptomEntryPage({super.key});
@@ -39,9 +37,6 @@ class _SymptomEntryFormState extends State<SymptomEntryForm> {
   int _durationHours = 0;
   int _durationMins = 0;
   String _notes = "";
-
-  static final DateFormat day = DateFormat('dd-MM-yyyy');
-  static final DateFormat time = DateFormat('HH:mm');
 
   @override
   Widget build(BuildContext context) {
@@ -99,43 +94,43 @@ class _SymptomEntryFormState extends State<SymptomEntryForm> {
               ),
               SizedBox(height: 20),
 
-              Text("Start Time:"),
-              Row( children: [
-                InputDatePickerFormField(
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime.now(),
-                  onDateSaved: (date) {
-                    setState(() {
-                      _selectedDate = date;
-                    });
-                  },
-                  fieldLabelText: 'Date',
-                ),
-                SizedBox(width: 20), 
-                DropdownMenu<int>(
-                  initialSelection: DateTime.now().hour,
-                  label: Text("Hour"),
-                  dropdownMenuEntries: [
-                    for (int i = 0; i <= 23; i++) DropdownMenuEntry(value: i, label: "$i"),
-                  ],
-                  onSelected: (int? value) {
-                    _hour = value!;
-                  },
-                ),
-                SizedBox(width: 20), 
-                DropdownMenu<int>(
-                  initialSelection: DateTime.now().minute,
-                  label: Text("Min"),
-                  dropdownMenuEntries: [
-                    for (int i = 0; i < 60; i += 15) DropdownMenuEntry(value: i, label: "$i"),
-                  ],
-                  onSelected: (int? value) {
-                    _min = value!;
-                  },
-                ),
-              ]),
-              SizedBox(height: 20),
+              // Text("Start Time:"),
+              // Row( children: [
+              //   InputDatePickerFormField(
+              //     initialDate: DateTime.now(),
+              //     firstDate: DateTime(2000),
+              //     lastDate: DateTime.now(),
+              //     onDateSaved: (date) {
+              //       setState(() {
+              //         _selectedDate = date;
+              //       });
+              //     },
+              //     fieldLabelText: 'Date',
+              //   ),
+              //   SizedBox(width: 20), 
+              //   DropdownMenu<int>(
+              //     initialSelection: DateTime.now().hour,
+              //     label: Text("Hour"),
+              //     dropdownMenuEntries: [
+              //       for (int i = 0; i <= 23; i++) DropdownMenuEntry(value: i, label: "$i"),
+              //     ],
+              //     onSelected: (int? value) {
+              //       _hour = value!;
+              //     },
+              //   ),
+              //   SizedBox(width: 20), 
+              //   DropdownMenu<int>(
+              //     initialSelection: DateTime.now().minute,
+              //     label: Text("Min"),
+              //     dropdownMenuEntries: [
+              //       for (int i = 0; i < 60; i += 15) DropdownMenuEntry(value: i, label: "$i"),
+              //     ],
+              //     onSelected: (int? value) {
+              //       _min = value!;
+              //     },
+              //   ),
+              // ]),
+              // SizedBox(height: 20),
 
               Text("Duration:"),
                 Row( children: [

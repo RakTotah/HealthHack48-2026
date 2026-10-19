@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Future.microtask(() => context.read<SymptomProvider>().fetchSymptomsByDate(DateTime.now(), 1));
-    Future.microtask(() => context.read<SymptomProvider>().fetchSymptomsNames());
+    Future.microtask(() => context.read<SymptomProvider>().getSymptomsNames());
   }
 
   DateTime _selectedDay = DateTime.now();
@@ -90,21 +90,21 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            provider.fetchSymptomsByDate(_selectedDay, 1);
+                            provider.getSymptomsByDate(_selectedDay, 1);
                           },
                           child: Text("Day"),
                         ),
                         SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () {
-                            provider.fetchSymptomsByDate(_selectedDay, 7);
+                            provider.getSymptomsByDate(_selectedDay, 7);
                           },
                           child: Text("Week"),
                         ),
                         SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () {
-                            provider.fetchSymptomsByDate(_selectedDay, DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month));
+                            provider.getSymptomsByDate(_selectedDay, DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month));
                           },
                           child: Text("Month"),
                         ),
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                             onSubmitted: (value) {
                               int? customDays = int.tryParse(value);
                               if (customDays != null && customDays > 0) {
-                                provider.fetchSymptomsByDate(_selectedDay, customDays);
+                                provider.getSymptomsByDate(_selectedDay, customDays);
                               }
                               },
                             ),
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                         onSelected: (String? value) {
                           if (value != null) {
-                            provider.fetchSymptomsBySymptom(value);
+                            provider.getSymptomsBySymptom(value);
                           }
                         },
                       ),

@@ -44,7 +44,7 @@ class SymptomProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchSymptomsBySymptom(String symptomName) async {
+  Future<void> getSymptomsBySymptom(String symptomName) async {
     return;
   }
 
