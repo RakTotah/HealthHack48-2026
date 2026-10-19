@@ -50,9 +50,9 @@ class SymptomProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteSymptom(int id) async {
+  Future<void> deleteSymptomLog(int id) async {
     try {
-      await _symptomService.deleteSymptom(id);
+      await _symptomService.deleteSymptomLog(id);
       _symptoms.removeWhere((symptom) => symptom.id == id);
       notifyListeners();
     } catch (e) {
