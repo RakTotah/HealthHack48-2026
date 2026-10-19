@@ -1,86 +1,56 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/symptom.dart';
 
 class SymptomService {
-  final String apiUrl = 'http://localhost:8080/symptoms';
+  final String baseUrl = 'http://localhost:8080';
 
-  Future<List<Symptom>> fetchSymptoms() async {
-    final response = await http.get(Uri.parse(apiUrl));
+  Future<List<Symptom>> getUserSymptoms() async{
 
     if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Symptom.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load symptoms');
+      return ;
+    } 
+    else {
+      throw Exception("Failed to get user's symptoms");
     }
   }
 
-  Future<Symptom> addSymptom(Symptom symptom) async {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(symptom.toJson()),
-    );
+  Future<Symptom> getSymptomByID(String symptomID) async{
 
+    if (response.statusCode == 200) {
+      return ;
+    } 
+    else {
+      throw Exception("Failed to get symptoms by ID");
+    }
+  }
+
+  Future<List<Symptom>>getSymptomsByDate(String date) async{
+    
+    if (response.statusCode == 200) {
+      return ;
+    } 
+    else {
+      throw Exception("Failed to get symptoms by date");
+    }
+  }
+
+  Future<Symptom> logSymptom(Symptom symptom) async{
+    final response = await http.post(Uri.parse())
     if (response.statusCode == 201) {
-      throw Exception('Failed to add symptom');
-    }
-    return symptom;
-  }
-
-  Future<void> deleteSymptom(int id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/$id'));
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete symptom');
+      return Symptom.fromJson(json.decode(response.body));
+    } 
+    else {
+      throw Exception('Failed to log symptom');
     }
   }
 
-  Future<List<Symptom>> fetchSymptomsByDate(DateTime date, int range) async {
-    final response = await http.get(Uri.parse('$apiUrl?date=${date.toIso8601String()}&range=$range'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Symptom.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load symptoms for the specified dates');
+  Future<Void> deleteSymptomLog(int id) async{
+    final response = await http.delete(Uri.parse('$baseUrl/symptoms/$id'));
+    if (response.statusCode != 204) {
+      throw Exception('Failed to delete tsymptom');
     }
-  }
-
-  Future<List<Symptom>> fetchSymptomsBySymptom(String symptomName) async {
-    final response = await http.get(Uri.parse('$apiUrl?symptomName=$symptomName'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Symptom.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load symptoms for the specified symptom');
-    }
-  }
-
-  Future<List<String>> fetchSymptomsNames(User user) async {
-    final response = await http.get(Uri.parse('$apiUrl?user=$user'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => String.fromJson(json).toList();
-    } else {
-      throw Exception('Failed to load symptoms names for the user');
-    }
-  }
-
-  Future<Symptom> updateSymptom(Symptom symptom) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/${symptom.id}'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(symptom.toJson()),
-    );
-
-    if (response.statusCode == 200) {
-      return Symptom.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to update symptom');
-    }
-  }
+  } 
 }
