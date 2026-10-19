@@ -22,7 +22,7 @@ class SymptomService {
           "username": username,
           "password": password
         }
-    )
+    );
     if (response.statusCode == 200) {
       return this.fromJSON(response);
     } 
@@ -40,7 +40,7 @@ class SymptomService {
           "username": username,
           "password": password
         }
-    )
+    );
     if (response.statusCode == 200) {
       return Symptom.fromJson(json.decode(response.body));
     }
@@ -57,7 +57,7 @@ class SymptomService {
           "username": username,
           "password": password
         }
-    )
+    );
     if (response.statusCode == 200) {
       return this.fromJSON(response);
     }
@@ -85,7 +85,7 @@ class SymptomService {
     }
   }
 
-  Future<Void> deleteSymptomLog(String id, String username, String password) async{
+  Future<bool> deleteSymptomLog(String id, String username, String password) async{
     final response = await http.delete(
         Uri.parse('$baseUrl/symptoms/$id'),
         headers: {
@@ -97,5 +97,6 @@ class SymptomService {
     if (response.statusCode != 204) {
       throw Exception(response.body);
     }
-  } 
+    return true;
+  }
 }
