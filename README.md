@@ -202,10 +202,10 @@ Main Contributors:
 
 ## Additional Notes
 - 100% human made, no generative LLM models or AI models used
-- 100% made 3 students in a day during a teaching strike
+- 100% made by 3 students in a day during a teaching strike
 - The product name was decided during a jollibee takeout dinner
 - 'John' was just randomly chosen and 'Kompot' was chosen because Gabriel wanted some to drink `¯\_(ツ)_/¯`
-- This is our first time creating an application, using spring boot (we just covered it days before this) and first time using flutter / dart
+- This is our first time creating an application, using spring boot (which basics were just covered it days before this) and first time using flutter / dart
 
 ## License
 
