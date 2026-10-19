@@ -6,7 +6,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,8 +21,6 @@ class _HomePageState extends State<HomePage> {
 
   DateTime _selectedDay = DateTime.now();
     DateTime _focusedDay = DateTime.now();
-    String _selectedSymptom = "";
-    int _selectedRange = 1;
     bool _symptomMode = false;
 
   @override
@@ -92,9 +89,6 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedRange = 1;
-                            });
                             provider.fetchSymptomsByDate(_selectedDay, 1);
                           },
                           child: Text("Day"),
@@ -102,9 +96,6 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedRange = 7;
-                            });
                             provider.fetchSymptomsByDate(_selectedDay, 7);
                           },
                           child: Text("Week"),
@@ -112,9 +103,7 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              _selectedRange = DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month);
-                            });
+                            provider.fetchSymptomsByDate(_selectedDay, DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month));
                           },
                           child: Text("Month"),
                         ),
@@ -130,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                             onSubmitted: (value) {
                               int? customDays = int.tryParse(value);
                               if (customDays != null && customDays > 0) {
-                                _selectedRange = customDays;
+                                provider.fetchSymptomsByDate(_selectedDay, customDays);
                               }
                               },
                             ),
@@ -147,9 +136,6 @@ class _HomePageState extends State<HomePage> {
                         ],
                         onSelected: (String? value) {
                           if (value != null) {
-                            setState(() {
-                              _selectedSymptom = value;
-                            });
                             provider.fetchSymptomsBySymptom(value);
                           }
                         },
