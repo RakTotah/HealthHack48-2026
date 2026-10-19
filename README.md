@@ -193,8 +193,19 @@ As this project was made in a day, we did not do any in depth testing and as a r
 
 ## Contributing
 
-This project was built during a hackathon, so it is rough around the edges.
+This project was built during a hackathon, so it is rough around the edges.<br>
+Main Contributors:
+- Owen Black (FrontEnd)
+- Rakan Totah (BackEnd)
+- Gabriel Kieskiewicz (BackEnd + Documentation)
 
+
+## Additional Notes
+- 100% human made, no generative LLM models or AI models used
+- 100% made 3 students in a day during a teaching strike
+- The product name was decided during a jollibee takeout dinner
+- 'John' was just randomly chosen and 'Kompot' was chosen because Gabriel wanted some to drink `¯\_(ツ)_/¯`
+- This is our first time creating an application, using spring boot (we just covered it days before this) and first time using flutter / dart
 
 ## License
 
