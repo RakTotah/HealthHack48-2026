@@ -116,8 +116,7 @@ curl -X GET http://localhost:8080/symptoms \
 ## API
 
 There are no sessions or tokens. Every request carries the user's `username`
-and `password`, which are checked on each call. For all endpoints except
-`POST /symptoms`, the credentials are sent as a JSON body:
+and `password`, which are checked on each call. For all endpoints the credentials are sent inside the JSON body:
 
 ```json
 { "username": "alice", "password": "secret" }
