@@ -84,12 +84,12 @@ public class SymptomController {
         ));
     }
 
-    @DeleteMapping("/symptoms")
+    @DeleteMapping("/symptoms/{symptomID}")
     public ResponseEntity<Void> deleteSymptomLog(
-            @Valid @RequestBody UUID symptomID,
+            @PathVariable String symptomID,
             @RequestHeader(value = "username") String username,
             @RequestHeader(value = "password") String password){
-        service.removeEntry(symptomID, requestMapper.toUser(new UserRequest(username, password)));
+        service.removeEntry(UUID.fromString(symptomID), requestMapper.toUser(new UserRequest(username, password)));
         return ResponseEntity.noContent().build();
     }
 }
