@@ -13,17 +13,29 @@ class SymptomProvider with ChangeNotifier {
   List<String> get symptomNames => _symptomNames;
   User _user = User(username: "LoggedOut", password: "Default");
 
-
-  Future<void> registerUser() async {
+  Future<void> loginUser(String username, String password) async {
     try {
-      await _userService.register(_user.username, _user.password);
+      await _userService.attemptLogin(username, password);
+      notifyListeners();
+
+      _user = User(username: username, password: password);
+    } catch (e) {
+      print ('Error logging in: $e');
+    }
+  }
+
+  Future<void> registerUser(String username, String password) async {
+    try {
+      await _userService.register(username, password);
       notifyListeners();
     } catch (e) {
       print ('Error registering: $e');
     }
+
+    loginUser(username, password);
   }
 
-  Future<void> getSymptomsByDate(String date, String username, String password) async {
+  Future<void> getSymptomsByDate(String date,) async {
     try {
       _symptoms = await _symptomService.getSymptomsByDate(date, _user.username, _user.password);
       notifyListeners();
@@ -32,14 +44,9 @@ class SymptomProvider with ChangeNotifier {
     }
   }
 
-  // Future<void> fetchSymptomsBySymptom(String symptomName) async {
-  //   try {
-  //     _symptoms = await _symptomService.fetchSymptomsBySymptom(symptomName);
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print('Error fetching symptoms: $e');
-  //   }
-  // }
+  Future<void> fetchSymptomsBySymptom(String symptomName) async {
+    return;
+  }
 
   Future<void> addSymptom(Symptom symptom) async {
     try {

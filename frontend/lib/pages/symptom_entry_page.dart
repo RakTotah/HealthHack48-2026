@@ -38,6 +38,7 @@ class _SymptomEntryFormState extends State<SymptomEntryForm> {
   int _min = 0;
   int _durationHours = 0;
   int _durationMins = 0;
+  String _notes = "";
 
   static final DateFormat day = DateFormat('dd-MM-yyyy');
   static final DateFormat time = DateFormat('HH:mm');
@@ -179,6 +180,21 @@ class _SymptomEntryFormState extends State<SymptomEntryForm> {
                 ),
               ]),
 
+              Text("Notes:"),
+              Container(
+                width: 1000,
+                height: 500,
+                child:TextField(
+                  decoration: InputDecoration(
+                    labelText: "Notes",
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.text,
+                  onSubmitted: (value) {
+                    _notes = value;
+                  },
+                ),
+              ),
             ],
           ),
         );
