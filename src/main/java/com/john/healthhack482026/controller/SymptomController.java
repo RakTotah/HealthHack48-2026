@@ -35,19 +35,19 @@ public class SymptomController {
     }
 
     @GetMapping("/symptoms")
-    public List<Symptom> getUserSymptoms(@Valid @RequestBody UserRequest request){
-        return service.findByUser(requestMapper.toUser(request));
+    public ResponseEntity<List<Symptom>> getUserSymptoms(@Valid @RequestBody UserRequest request){
+        return ResponseEntity.status(HttpStatus.FOUND).body(service.findByUser(requestMapper.toUser(request)));
     }
 
     @GetMapping("/symptoms/{id}")
-    public Symptom getSymptomByID(@Valid @RequestBody UserRequest request, @PathVariable String symptomID) {
-        return service.findById(UUID.fromString(symptomID), requestMapper.toUser(request));
+    public ResponseEntity<Symptom> getSymptomByID(@Valid @RequestBody UserRequest request, @PathVariable String symptomID) {
+        return ResponseEntity.status(HttpStatus.FOUND).body(service.findById(UUID.fromString(symptomID), requestMapper.toUser(request)));
     }
 
     @GetMapping("/symptoms/date/{date}")
-    public List<Symptom> getSymptomsByDate(@Valid @RequestBody UserRequest request, @PathVariable String date){
+    public ResponseEntity<List<Symptom>> getSymptomsByDate(@Valid @RequestBody UserRequest request, @PathVariable String date){
         try{
-            return service.findByDateRange(Instant.parse(date), Instant.parse(date), requestMapper.toUser(request));
+            return ResponseEntity.status(HttpStatus.FOUND).body(service.findByDateRange(Instant.parse(date), Instant.parse(date), requestMapper.toUser(request)));
         } catch (Exception e) {
             throw new RuntimeException("Date cannot be parsed, attempt DD-MM-YY. Example: 20-09-05 is the 20th of September 2005");
         }
