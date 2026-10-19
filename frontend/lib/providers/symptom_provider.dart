@@ -9,12 +9,12 @@ class SymptomProvider with ChangeNotifier {
   List<Symptom> get symptoms => _symptoms;
   List<String> get symptomNames => _symptomNames;
 
-  Future<void> fetchSymptomsByDate(DateTime day, int range) async {
+  Future<void> getSymptomsByDate(String date) async {
     try {
-      _symptoms = await _symptomService.fetchSymptomsByDate(day, range);
+      _symptoms = await _symptomService.getSymptomsByDate(date);
       notifyListeners();
     } catch (e) {
-      print('Error fetching symptoms: $e');
+      print('Error get symptoms: $e');
     }
   }
 
@@ -24,15 +24,6 @@ class SymptomProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('Error fetching symptoms: $e');
-    }
-  }
-
-   Future<void> fetchSymptomsNames() async {
-    try {
-      _symptomNames = await _symptomService.fetchSymptomsNames(/* this user */);
-      notifyListeners();
-    } catch (e) {
-      print('Error fetching symptom names: $e');
     }
   }
 
