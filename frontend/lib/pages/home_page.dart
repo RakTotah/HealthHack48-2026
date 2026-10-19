@@ -43,14 +43,12 @@ class _CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   String _selectedSymptom = "";
+  int _selectedRange = 1;
   
-
   _setSymptom(String symptom) {
     setState(() {
       _selectedSymptom = symptom;
     });
-
-    
   }
 
   _setRange(String range) {
@@ -65,9 +63,11 @@ class _CalendarState extends State<Calendar> {
       case "month":
         days = DateUtils.getDaysInMonth(_selectedDay.year, _selectedDay.month);
         break;
-      case "custom":
-        // Custom range logic can be implemented here
-        break;
+      default:
+        var value = int.tryParse(range);
+        if (value != null) {
+          days = value;
+        }
     }
     setState(() {
       _selectedRange = days;
@@ -109,6 +109,7 @@ class _CalendarState extends State<Calendar> {
       ],
     );
   }
+}
 }
 
 class ModeSelector extends StatelessWidget {

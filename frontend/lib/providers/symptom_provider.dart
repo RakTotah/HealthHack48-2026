@@ -4,9 +4,10 @@ import '../services/symptom_service.dart';
 
 class SymptomProvider with ChangeNotifier {
   final SymptomService _symptomService = SymptomService();
+  List<String> _symptomNames = [];
   List<Symptom> _symptoms = [];
-
   List<Symptom> get symptoms => _symptoms;
+  List<String> get symptomNames => _symptomNames;
 
   Future<void> fetchSymptomsByDate(DateTime day, int range) async {
     try {
@@ -17,7 +18,23 @@ class SymptomProvider with ChangeNotifier {
     }
   }
 
-  
+  Future<void> fetchSymptomsBySymptom(String symptomName) async {
+    try {
+      _symptoms = await _symptomService.fetchSymptomsBySymptom(symptomName);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching symptoms: $e');
+    }
+  }
+
+   Future<void> fetchSymptomsNames() async {
+    try {
+      _symptomNames = await _symptomService.fetchSymptomsNames(/* this user */);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching symptom names: $e');
+    }
+  }
 
   Future<void> addSymptom(Symptom symptom) async {
     try {

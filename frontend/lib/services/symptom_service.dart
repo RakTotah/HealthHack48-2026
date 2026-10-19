@@ -59,6 +59,17 @@ class SymptomService {
     }
   }
 
+  Future<List<String>> fetchSymptomsNames(User user) async {
+    final response = await http.get(Uri.parse('$apiUrl?user=$user'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => String.fromJson(json).toList();
+    } else {
+      throw Exception('Failed to load symptoms names for the user');
+    }
+  }
+
   Future<Symptom> updateSymptom(Symptom symptom) async {
     final response = await http.put(
       Uri.parse('$apiUrl/${symptom.id}'),

@@ -7,6 +7,7 @@ import 'pages/home_page.dart';
 import 'pages/symptom_entry_page.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
+import 'pages/landing_page.dart';
 
 void main() {
   runApp (
@@ -23,7 +24,8 @@ class SymptomApp extends StatelessWidget {
     return MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const HomePage(),
+      '/': (context) => const LandingPage(),
+      'home'
       'symptom_entry': (context) => const SymptomEntryPage(),
       'login': (context) => const LoginPage(),
       'register': (context) => const RegisterPage(),
