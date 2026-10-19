@@ -2,7 +2,6 @@ package com.john.healthhack482026.controller;
 
 import com.john.healthhack482026.Exceptions.*;
 import com.john.healthhack482026.dto.ErrorResponse;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
