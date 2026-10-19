@@ -43,7 +43,7 @@ class SymptomProvider with ChangeNotifier {
 
   Future<void> addSymptom(Symptom symptom) async {
     try {
-      final newSymptom = await _symptomService.addSymptom(symptom);
+      final newSymptom = await _symptomService.logSymptom(symptom);
       _symptoms.add(newSymptom);
       notifyListeners();
     } catch (e) {
