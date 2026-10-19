@@ -1,13 +1,27 @@
 import 'package:flutter/foundation.dart';
 import '../models/symptom.dart';
+import '../models/User.dart';
 import '../services/symptom_service.dart';
+import '../services/login_service.dart';
 
 class SymptomProvider with ChangeNotifier {
   final SymptomService _symptomService = SymptomService();
+  final LoginService _userService = LoginService();
   List<String> _symptomNames = [];
   List<Symptom> _symptoms = [];
   List<Symptom> get symptoms => _symptoms;
   List<String> get symptomNames => _symptomNames;
+  User _user = User((username: "LoggedOut", password: "Default"));
+
+
+  Future<void> registerUser(String username, String password) {
+    try {
+      _user = await _userService.register(username, password);
+      notifyListeners();
+    } catch (e) {
+      print ('Error registering: $e');
+    }
+  }
 
   Future<void> getSymptomsByDate(String date) async {
     try {
